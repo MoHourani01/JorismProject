@@ -1,13 +1,10 @@
-
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jorism_project/shared/components/component.dart';
 
-
-TextEditingController phoneController = TextEditingController();
-TextEditingController newPhoneController = TextEditingController();
-TextEditingController emailController = TextEditingController();
-
+TextEditingController newUserController = TextEditingController();
 
 void mobileNumberDialog(BuildContext context) {
   AwesomeDialog(
@@ -27,17 +24,28 @@ void mobileNumberDialog(BuildContext context) {
             BoxShadow(blurRadius: 3.0, color: Colors.black),
           ],
         ),
-        child: defaultButton(
-          function: () {
-            phoneController.clear();
-            newPhoneController.clear();
-            emailController.clear();
-            navigators.navigatePop(context);
+        child: TextButton(
+          child: Text(
+            'Submit',
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.black,
+            ),
+          ),
+          onPressed: () async {
+            final User? user = FirebaseAuth.instance.currentUser;
+            if (user != null) {
+              String newPhone = newUserController.text;
+
+              // Update the username in Firebase Firestore
+              CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+              await usersCollection.doc(user.uid).update({
+                'phone': newPhone,
+              });
+              newUserController.clear();
+              Navigator.of(context).pop(); // Close the dialog
+            }
           },
-          text: 'Submit',
-          fontSize: 18,
-          backround: Colors.grey.shade700,
-          textButtonColor: Colors.black,
         ),
       ),
     ),
@@ -46,37 +54,15 @@ void mobileNumberDialog(BuildContext context) {
         padding: const EdgeInsets.all(12.0),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 12),
-          height: 250,
+          height: 100,
           width: double.infinity,
-          // color: Colors.blue,
           child: Column(
             children: [
               defaultLoginFormField(
-                controller: phoneController,
-                type: TextInputType.number,
-                labelText: 'Old Phone Number',
-                prefix: Icons.phone_android,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              defaultLoginFormField(
-                controller: newPhoneController,
-                type: TextInputType.number,
+                controller: newUserController,
+                type: TextInputType.text,
                 labelText: 'New Phone Number',
-                prefix: Icons.phone_android,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              defaultLoginFormField(
-                controller: emailController,
-                type: TextInputType.emailAddress,
-                labelText: 'Email Address',
-                prefix: Icons.email,
-                onChanged: (value){
-                  emailController=value;
-                },
+                prefix: Icons.phone,
               ),
             ],
           ),
