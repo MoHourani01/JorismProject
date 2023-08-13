@@ -53,7 +53,7 @@ class AdminProfileScreen extends StatelessWidget {
                     height: 150,
                     child: CircleAvatar(
                       radius: 70,
-                      backgroundImage: AssetImage("assets/images/harry.jpg"),
+                      backgroundImage: AssetImage("assets/images/user.png"),
                     ),
                   ),
                   SizedBox(height: 25,),
