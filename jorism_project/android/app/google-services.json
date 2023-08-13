@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "473475172014",
+    "project_id": "jorismappproject",
+    "storage_bucket": "jorismappproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:473475172014:android:7785293ec1e64eae66cf3f",
+        "android_client_info": {
+          "package_name": "com.example.jorism_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "473475172014-89prek9m1i82evkeubaa6vgkq9c4e8m3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvabBDIWmytRXaINBZkdD_fQBweQl5l1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "473475172014-89prek9m1i82evkeubaa6vgkq9c4e8m3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
