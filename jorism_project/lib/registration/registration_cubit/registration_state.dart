@@ -103,3 +103,11 @@ class AgentForgetPasswordErrorState extends RegisterationState{
   AgentForgetPasswordErrorState(this.error);
 }
 
+class ChangeUserNameLoadingState extends RegisterationState{}
+class ChangeUserNameSuccessState extends RegisterationState{}
+class ChangeUserNameErrorState extends RegisterationState{
+  final String error;
+  ChangeUserNameErrorState(this.error);
+}
+
+

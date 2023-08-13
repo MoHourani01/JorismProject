@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +10,6 @@ import 'package:jorism_project/registration/login/login_screen.dart';
 import 'package:jorism_project/registration/register/register_screen.dart';
 import 'package:jorism_project/registration/registration_cubit/registration_state.dart';
 import 'package:jorism_project/shared/components/component.dart';
-
 
 
 class RegistrationCubit extends Cubit<RegisterationState> {
@@ -34,7 +32,6 @@ class RegistrationCubit extends Cubit<RegisterationState> {
         : Icons.visibility_off_outlined;
     emit(ChangePasswordVisibiltyState());
   }
-
 
 
   void signUpScreen(context) {
@@ -105,13 +102,13 @@ class RegistrationCubit extends Cubit<RegisterationState> {
           .then((userSnapshot) {
         userModel =
             UserModel.fromJson(userSnapshot.data() as Map<String, dynamic>);
-        if(userModel!.isAgent==true){
+        if (userModel!.isAgent == true) {
           emit(AgentLoginSuccessState());
         }
         else
           emit(LoginSuccessState());
       }).catchError((error) {
-        if(userModel!.isAgent==true)
+        if (userModel!.isAgent == true)
           emit(AgentLoginSuccessState());
         else
           emit(LoginErrorState(error.toString()));
@@ -182,7 +179,8 @@ class RegistrationCubit extends Cubit<RegisterationState> {
       ssc: ssc ?? '',
     );
     if (ssc != null && ssc.isNotEmpty) {
-      userModel!.isAgent = true; // Set isAgent to true if signing up as an agent
+      userModel!.isAgent =
+      true; // Set isAgent to true if signing up as an agent
     }
     FirebaseFirestore.instance
         .collection('users')
@@ -210,5 +208,27 @@ class RegistrationCubit extends Cubit<RegisterationState> {
     }).catchError((error) {
       emit(ForgetPasswordErrorState(error.toString()));
     });
+  }
+
+  bool loadingUsername=false;
+  void changeUsername(String username) async {
+    emit(ChangeUserNameLoadingState());
+    if (firebaseAuth.currentUser != null) {
+      String newUsername = username;
+      // Update the username in Firebase Firestore
+      CollectionReference usersCollection = FirebaseFirestore.instance
+          .collection('users');
+      await usersCollection.doc(firebaseAuth.currentUser!.uid).update({
+        'username': newUsername,
+      }).then((value) {
+        print('new username=> ${newUsername}');
+        loadingUsername=true;
+        emit(ChangeUserNameSuccessState());
+      }
+      ).catchError((error) {
+        emit(ChangeUserNameErrorState(error.toString()));
+      }
+      );
+    }
   }
 }

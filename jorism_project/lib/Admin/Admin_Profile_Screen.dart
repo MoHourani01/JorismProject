@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jorism_project/Admin/Admin_AgentScreen.dart';
+import 'package:jorism_project/Admin/addProduct.dart';
 import 'package:jorism_project/popups_widgets/mobile_number_popup.dart';
 import 'package:jorism_project/popups_widgets/password_popup.dart';
 import 'package:jorism_project/popups_widgets/username_popup.dart';
@@ -83,7 +84,7 @@ class AdminProfileScreen extends StatelessWidget {
                                         onPressed: ()
                                         { uesrnameDialog(context);
                                         },
-                                        title: 'Name: ${agentCubit.userModel!.username}',
+                                        title: '${agentCubit.userModel!.username}',
                                         Ficon: Icons.man,
                                         Licon: Icons.settings,
                                         onTap: (){
@@ -100,7 +101,7 @@ class AdminProfileScreen extends StatelessWidget {
                                         onPressed: (){
                                           mobileNumberDialog(context);
                                         },
-                                        title: 'Phone: ${agentCubit.userModel!.phone}',
+                                        title: '${agentCubit.userModel!.phone}',
                                         Ficon: Icons.numbers,
                                         Licon: Icons.settings),
                                   ),
@@ -136,7 +137,7 @@ class AdminProfileScreen extends StatelessWidget {
                                         onTap: (){
                                         },
                                         onPressed: (){},
-                                        title: 'SCC: ${agentCubit.userModel!.ssc}',
+                                        title: '${agentCubit.userModel!.ssc}',
                                         Ficon: Icons.numbers,
                                         Licon: Icons.settings),
                                   ),
@@ -158,7 +159,7 @@ class AdminProfileScreen extends StatelessWidget {
                                   Expanded(
                                     child: defaultProfileFormField(
                                         onPressed: () {
-
+                                          navigators.navigatorWithBack(context, AddProductsScreen());
                                         },
                                         title: 'Add Product',
                                         Ficon: Icons.shopping_cart,
