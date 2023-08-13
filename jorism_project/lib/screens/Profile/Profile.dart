@@ -1,9 +1,11 @@
 
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jorism_project/popups_widgets/mobile_number_popup.dart';
 import 'package:jorism_project/popups_widgets/password_popup.dart';
 import 'package:jorism_project/popups_widgets/username_popup.dart';
+import 'package:jorism_project/registration/login/login_screen.dart';
 import 'package:jorism_project/registration/registration_cubit/registration_cubit.dart';
 import 'package:jorism_project/registration/registration_cubit/registration_state.dart';
 import 'package:jorism_project/screens/Profile/PaymentMethod_Screen.dart';
@@ -16,6 +18,11 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RegistrationCubit,RegisterationState>(
     listener: (context, state){
+      if (state is UserLogoutSuccessState){
+        navigators.navigatePushReplacement(context, LoginScreen());
+
+        showToast(text: 'Logged out', state: ToastStates.Success);
+      }
     },
     builder: (context, state){
       var profileCubit=RegistrationCubit.get(context);
@@ -146,25 +153,42 @@ class ProfileScreen extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Expanded(
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                            color:  Colors.white,
-                                            borderRadius: BorderRadius.circular(30.0),
-                                            boxShadow: [
-                                              BoxShadow(blurRadius: 0.5,color: Colors.grey.shade700),
-                                            ],
-                                          ),
-                                          child:
-                                          TextButton(onPressed: () {  },
-                                            child: Text('Log Out',
-                                              style: TextStyle(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.red
-                                              ),),
-                                          )
+                                    ConditionalBuilder(
+                                      condition: state is! UserLogoutLoadingState,
+                                      builder: (context)=>Expanded(
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              color:  Colors.white,
+                                              borderRadius: BorderRadius.circular(30.0),
+                                              boxShadow: [
+                                                BoxShadow(blurRadius: 0.5,color: Colors.grey.shade700),
+                                              ],
+                                            ),
+                                            child:
+                                            TextButton(onPressed: () async{
+                                              // profileCubit
+                                              //     .logout()
+                                              //     .then((value) =>
+                                              //     navigators.navigateTo(
+                                              //         context, LoginScreen()))
+                                              //     .whenComplete(() =>
+                                              //     showToast(
+                                              //         text: 'Logged out',
+                                              //         state: ToastStates.Success));
+                                              await profileCubit.logoutUser();
+                                              // navigators.navigateTo(context, LoginScreen());
+                                              // showToast(text: 'Logged Out Successfully', state: ToastStates.Success);
+                                            },
+                                              child: Text('Log Out',
+                                                style: TextStyle(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.red
+                                                ),),
+                                            )
+                                        ),
                                       ),
+                                      fallback: (context)=>Center(child: CircularProgressIndicator(),),
                                     ),
                                     SizedBox(width: 20,),
                                     Expanded(
@@ -178,9 +202,9 @@ class ProfileScreen extends StatelessWidget {
                                           ),
                                           child:
                                           TextButton(onPressed: () {
-                                            passwordDialog(context);
+
                                           },
-                                            child: Text('Change Password' ,
+                                            child: Text('Delete Account' ,
                                               style: TextStyle(
                                                   fontSize: 17,
                                                   fontWeight: FontWeight.bold,

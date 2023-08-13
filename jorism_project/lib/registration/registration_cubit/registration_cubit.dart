@@ -65,7 +65,7 @@ class RegistrationCubit extends Cubit<RegisterationState> {
   // List<UserModel>? userModel;
   // String? password=UserModel.userModel[0][3];
   // UserModel?password;
-  void loginToHome({required String email, required String password}) async {
+  Future<void> loginToHome({required String email, required String password}) async {
     emit(LoginLoadingState());
     // userName=UserModel.fromJson(userName!.username as Map<String, dynamic>);
     // userModel= await Registration.getUserData();
@@ -90,7 +90,7 @@ class RegistrationCubit extends Cubit<RegisterationState> {
     //   // User not found or password doesn't match
     //   emit(LoginErrorState());
     // }
-    FirebaseAuth.instance
+    await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
       print(value.user!.email);
@@ -210,19 +210,16 @@ class RegistrationCubit extends Cubit<RegisterationState> {
     });
   }
 
-  bool loadingUsername=false;
   void changeUsername(String username) async {
     emit(ChangeUserNameLoadingState());
     if (firebaseAuth.currentUser != null) {
       String newUsername = username;
-      // Update the username in Firebase Firestore
       CollectionReference usersCollection = FirebaseFirestore.instance
           .collection('users');
       await usersCollection.doc(firebaseAuth.currentUser!.uid).update({
         'username': newUsername,
       }).then((value) {
         print('new username=> ${newUsername}');
-        loadingUsername=true;
         emit(ChangeUserNameSuccessState());
       }
       ).catchError((error) {
@@ -230,5 +227,40 @@ class RegistrationCubit extends Cubit<RegisterationState> {
       }
       );
     }
+  }
+
+  void changePhone(String phone) async {
+    emit(ChangePhoneLoadingState());
+    if (firebaseAuth.currentUser != null) {
+      String newPhone = phone;
+      CollectionReference usersCollection = FirebaseFirestore.instance
+          .collection('users');
+      await usersCollection.doc(firebaseAuth.currentUser!.uid).update({
+        'phone': newPhone,
+      }).then((value) {
+        print('new phone=> ${newPhone}');
+        emit(ChangePhoneSuccessState());
+      }
+      ).catchError((error) {
+        emit(ChangePhoneErrorState(error.toString()));
+      }
+      );
+    }
+  }
+  
+  Future<void> logoutUser()async{
+    emit(UserLogoutLoadingState());
+    await firebaseAuth.signOut().then(
+            (value) {
+              print('Logged out');
+              emit(UserLogoutSuccessState());
+            }
+    ).catchError((error){
+      emit(UserLogoutErrorState(error.toString()));
+    });
+  }
+
+  Future<void> logout() async {
+    await firebaseAuth.signOut();
   }
 }
