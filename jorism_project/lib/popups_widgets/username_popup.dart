@@ -1,11 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jorism_project/shared/components/component.dart';
 
-
-TextEditingController userController = TextEditingController();
 TextEditingController newUserController = TextEditingController();
-TextEditingController emailController = TextEditingController();
 
 void uesrnameDialog(BuildContext context) {
   AwesomeDialog(
@@ -25,17 +24,29 @@ void uesrnameDialog(BuildContext context) {
             BoxShadow(blurRadius: 3.0, color: Colors.black),
           ],
         ),
-        child: defaultButton(
-          function: () {
-            userController.clear();
-            newUserController.clear();
-            emailController.clear();
-            navigators.navigatePop(context);
+        child: TextButton(
+          child: Text(
+            'Submit',
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.black,
+            ),
+          ),
+          onPressed: () async {
+            final User? user = FirebaseAuth.instance.currentUser;
+            if (user != null) {
+              String newUsername = newUserController.text;
+
+              // Update the username in Firebase Firestore
+              CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+              await usersCollection.doc(user.uid).update({
+                'username': newUsername,
+              });
+
+              newUserController.clear();
+              Navigator.of(context).pop(); // Close the dialog
+            }
           },
-          text: 'Submit',
-          fontSize: 18,
-          backround: Colors.grey.shade700,
-          textButtonColor: Colors.black,
         ),
       ),
     ),
@@ -44,37 +55,15 @@ void uesrnameDialog(BuildContext context) {
         padding: const EdgeInsets.all(12.0),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 12),
-          height: 250,
+          height: 100,
           width: double.infinity,
-          // color: Colors.blue,
           child: Column(
             children: [
-              defaultLoginFormField(
-                controller: userController,
-                type: TextInputType.text,
-                labelText: 'Old Username',
-                prefix: Icons.person,
-              ),
-              SizedBox(
-                height: 15,
-              ),
               defaultLoginFormField(
                 controller: newUserController,
                 type: TextInputType.text,
                 labelText: 'New Username',
                 prefix: Icons.person,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              defaultLoginFormField(
-                controller: emailController,
-                type: TextInputType.emailAddress,
-                labelText: 'Email Address',
-                prefix: Icons.email,
-                onChanged: (value){
-                  emailController=value;
-                },
               ),
             ],
           ),

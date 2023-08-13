@@ -67,6 +67,7 @@ dependencies:
   awesome_dialog:
 
   #firebase
+  firebase_database: ^10.2.4
   firebase_core: ^2.7.1
   firebase_auth: ^4.4.0
   cloud_firestore: 4.8.4

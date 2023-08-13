@@ -83,7 +83,7 @@ class ProfileScreen extends StatelessWidget {
                                     onPressed: ()
                                     { uesrnameDialog(context);
                                     },
-                                    title: 'Name: ${profileCubit.userModel?.username??''}',
+                                    title: '${profileCubit.userModel?.username??''}',
                                     Ficon: Icons.man,
                                     Licon: Icons.settings,
                                     onTap: (){
@@ -100,7 +100,7 @@ class ProfileScreen extends StatelessWidget {
                                     onPressed: (){
                                       mobileNumberDialog(context);
                                     },
-                                    title: 'Phone: ${profileCubit.userModel?.phone??''}',
+                                    title: '${profileCubit.userModel?.phone??''}',
                                     Ficon: Icons.numbers,
                                     Licon: Icons.settings),
                               ),

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jorism_project/cubit/cubit.dart';
 import 'package:jorism_project/cubit/state.dart';
+import 'package:jorism_project/popups_widgets/username_popup.dart';
 import 'package:jorism_project/registration/registration_cubit/registration_cubit.dart';
+import 'package:jorism_project/screens/Profile/Profile.dart';
 import 'package:jorism_project/screens/splash/splash_screen.dart';
 import 'package:jorism_project/shared/Network/Cache_Helper.dart';
 import 'package:jorism_project/shared/bloc_observe.dart';
@@ -49,7 +51,7 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF072B79)),
               useMaterial3: true,
             ),
-            home:SplashScreen(),
+            home: SplashScreen(),
           );
         },
       ),

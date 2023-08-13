@@ -211,5 +211,4 @@ class RegistrationCubit extends Cubit<RegisterationState> {
       emit(ForgetPasswordErrorState(error.toString()));
     });
   }
-
 }

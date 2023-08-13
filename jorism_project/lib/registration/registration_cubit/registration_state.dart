@@ -53,7 +53,6 @@ class ForgetPasswordErrorState extends RegisterationState{
   final String error;
   ForgetPasswordErrorState(this.error);
 }
-
 //============================Agent States
 class AgentRegistrationInitialState extends RegisterationState{}
 
