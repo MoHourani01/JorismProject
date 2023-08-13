@@ -110,4 +110,18 @@ class ChangeUserNameErrorState extends RegisterationState{
   ChangeUserNameErrorState(this.error);
 }
 
+class ChangePhoneLoadingState extends RegisterationState{}
+class ChangePhoneSuccessState extends RegisterationState{}
+class ChangePhoneErrorState extends RegisterationState{
+  final String error;
+  ChangePhoneErrorState(this.error);
+}
+
+class UserLogoutLoadingState extends RegisterationState{}
+class UserLogoutSuccessState extends RegisterationState{}
+class UserLogoutErrorState extends RegisterationState{
+  final String error;
+  UserLogoutErrorState(this.error);
+}
+
 

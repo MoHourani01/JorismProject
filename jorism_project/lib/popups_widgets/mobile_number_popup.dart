@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jorism_project/registration/registration_cubit/registration_cubit.dart';
 import 'package:jorism_project/shared/components/component.dart';
 
 TextEditingController newUserController = TextEditingController();
@@ -33,18 +34,13 @@ void mobileNumberDialog(BuildContext context) {
             ),
           ),
           onPressed: () async {
-            final User? user = FirebaseAuth.instance.currentUser;
-            if (user != null) {
-              String newPhone = newUserController.text;
-
-              // Update the username in Firebase Firestore
-              CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
-              await usersCollection.doc(user.uid).update({
-                'phone': newPhone,
-              });
-              newUserController.clear();
-              Navigator.of(context).pop(); // Close the dialog
-            }
+            RegistrationCubit.get(context)
+                .changePhone(newUserController.text);
+            showToast(
+                text: 'Phone Number Changed Successfully',
+                state: ToastStates.Success);
+            newUserController.clear();
+            Navigator.of(context).pop(); // Close the dialog
           },
         ),
       ),
@@ -60,7 +56,7 @@ void mobileNumberDialog(BuildContext context) {
             children: [
               defaultLoginFormField(
                 controller: newUserController,
-                type: TextInputType.text,
+                type: TextInputType.phone,
                 labelText: 'New Phone Number',
                 prefix: Icons.phone,
               ),

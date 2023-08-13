@@ -235,10 +235,10 @@ class LoginScreen extends StatelessWidget {
         }
         if (state is LoginSuccessState){
           showToast(text: 'Login Successfully', state: ToastStates.Success);
-          navigators.navigateTo(context, BottomNavBar());}
+          navigators.navigatePushReplacement(context, BottomNavBar());}
         if(state is AgentLoginSuccessState){
           showToast(text: 'Agent Login Successfully', state: ToastStates.Success);
-          navigators.navigateTo(context, AdminProfileScreen());
+          navigators.navigatePushReplacement(context, AdminProfileScreen());
         }
 
       },
@@ -390,10 +390,11 @@ class LoginScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(9),
                                     ),
                                     child: MaterialButton(
-                                      onPressed: () {
+                                      onPressed: () async{
                                         if (formKey.currentState!.validate()) {
-                                          cubit.loginToHome(email: emailController.text.toLowerCase(),
+                                          await cubit.loginToHome(email: emailController.text.toLowerCase(),
                                               password: passwordController.text);
+                                          // navigators.navigatePushReplacement(context, BottomNavBar());
                                           // cubit.agentLoginToHome(email: emailController.text, password: passwordController.text);// if (state is LoginSuccessState){
 
                                           //   cubit.loginToHome(email: emailController.text,
