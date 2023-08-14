@@ -32,3 +32,10 @@ class ImageErrorState extends JorismState{
   final String error;
   ImageErrorState(this.error);
 }
+
+class AddProductLoadingState extends JorismState{}
+class AddProductSuccessState extends JorismState{}
+class AddProductErrorState extends JorismState{
+  final String error;
+  AddProductErrorState(this.error);
+}

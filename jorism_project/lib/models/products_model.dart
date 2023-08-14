@@ -16,7 +16,7 @@ class ProductsModel{
   final String productName;
   final String productImage;
   final String productDescription;
-  final DatePickerDialog productDate;
+  final String productDate;
   final String productTime;
   final String productAddress;
   final int productPrice;

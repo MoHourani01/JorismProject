@@ -1,11 +1,17 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jorism_project/Admin/Admin_Profile_Screen.dart';
 import 'package:jorism_project/cubit/cubit.dart';
 import 'package:jorism_project/cubit/state.dart';
+import 'package:jorism_project/models/products_model.dart';
+import 'package:jorism_project/screens/bottom_nav_bar/bottom_nav_bar_widget.dart';
 import 'package:jorism_project/shared/components/component.dart';
 import 'package:jorism_project/shared/components/constants.dart';
+import 'package:uuid/uuid.dart';
 
 class AddProductsScreen extends StatelessWidget {
   TextEditingController productName = TextEditingController();
@@ -28,7 +34,6 @@ class AddProductsScreen extends StatelessWidget {
   //    lastDate: DateTime(2030),
   //  );
   // }
-
   File? imageFile;
 
   ImagePicker picker = ImagePicker();
@@ -39,6 +44,7 @@ class AddProductsScreen extends StatelessWidget {
 
   bool selectFileColor = false;
 
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<JorismCubit, JorismState>(
@@ -47,6 +53,7 @@ class AddProductsScreen extends StatelessWidget {
         void pickDate(BuildContext context) {
           JorismCubit.get(context).datePicker(context);
         }
+
         var addProductCubit = JorismCubit.get(context);
         return SafeArea(
           child: Scaffold(
@@ -124,7 +131,7 @@ class AddProductsScreen extends StatelessWidget {
                       defaultDateFormField(
                         controller: productDate,
                         type: TextInputType.datetime,
-                        hintText: 'Product Date',
+                        hintText: '${addProductCubit.selectedDate.toString()}',
                         labilStyleColor: Color(0xFF4F2E1D),
                         validate: (String? value) {
                           if (value!.isEmpty) {
@@ -133,10 +140,11 @@ class AddProductsScreen extends StatelessWidget {
                           return null;
                         },
                         prefix: Icons.calendar_month,
-                        onTap: () {
+                        onTap: () async {
                           // datePicker();
                           // addProductCubit.datePicker(context);
                           pickDate(context);
+
                         },
                       ),
                       SizedBox(height: 10),
@@ -210,7 +218,42 @@ class AddProductsScreen extends StatelessWidget {
                         radius: 8.0,
                         fontSize: 18,
                         backround: Color(0xFF4F2E1D),
-                        function: () async {},
+                        function: () async {
+                          var id = Uuid().v4();
+                          var model = ProductsModel(
+                              productId: id,
+                              productName: productName.text,
+                              productPrice: int.parse(productPrice.text),
+                              productDescription: productDescription.text,
+                              productDate: addProductCubit.selectedDate.toString(),
+                              productTime: productTime.text,
+                              productAddress: productLocation.text,
+                              productImage: '',
+                              quantity: 0);
+                          if (productDescription.text.isEmpty) {
+                            showToast(
+                                text: 'Fill the description',
+                                state: ToastStates.Warning);
+                          } else if (productName.text.isEmpty) {
+                            showToast(
+                                text: 'Fill the Name',
+                                state: ToastStates.Warning);
+                          } else if (productLocation.text.isEmpty) {
+                            showToast(
+                                text: 'Fill the Address',
+                                state: ToastStates.Warning);
+                          } else {
+                            await addProductCubit
+                                .addProduct(model)
+                                .whenComplete(() {
+                              navigators.navigatorWithBack(
+                                  context, AdminProfileScreen());
+                            });
+                            showToast(
+                                text: 'Product Added Successfully',
+                                state: ToastStates.Success);
+                          }
+                        },
                         text: "Add product",
                       ),
                     ],
