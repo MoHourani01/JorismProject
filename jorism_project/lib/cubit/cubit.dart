@@ -23,87 +23,80 @@ class JorismCubit extends Cubit<JorismState> {
     return BlocProvider.of(context);
   }
 
-  int currentIndex = 0;
-  List<Widget> screens = [
-    HomeScreen(),
-    NewsScreen(),
-    AgenciesScreen(),
-    PlacesScreen(),
-    ProfileScreen(),
-  ];
+  // int currentIndex = 0;
+  // List<Widget> screens = [
+  //   HomeScreen(),
+  //   NewsScreen(),
+  //   AgenciesScreen(),
+  //   PlacesScreen(),
+  //   ProfileScreen(),
+  // ];
+  //
+  // void changeIndex(int index) {
+  //   currentIndex = index;
+  //   emit(JorismChangeBottomNavBarState());
+  // }
 
-  void changeIndex(int index) {
-    currentIndex = index;
-    emit(JorismChangeBottomNavBarState());
-  }
-
-  // int activatedIndex = 0;
-  // int activatedAgencyIndex = 0;
-
-  DateTime dateTime=DateTime.now();
   DateTime selectedDate = DateTime.now();
   String formattedSelectedDate = '';
+
   Future<void> datePicker(BuildContext context) async {
+    emit(DateTimeLoadingState());
     final pickDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2030),
-
     ).then((value) {
-      selectedDate=value!;
+      emit(DateTimeSuccessState());
+      selectedDate = value!;
       print(selectedDate);
+    }).catchError((error){
+      emit(DateTimeErrorState());
+      print('date time error=> ${error}');
     });
   }
-
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   ProductsModel? productsModel;
 
-  // Future<void> addProducts(ProductsModel product, String userId) async {
-  //   emit(AddProductLoadingState());
-  //   await FirebaseFirestore.instance
-  //       .collection('products')
-  //       .doc(product.productId)
-  //       .collection('userProducts')
-  //       .doc(userId)
-  //       .set(product.toProductsJson()).then((value) {
-  //         emit(AddProductSuccessState());
-  //   })
-  //       .catchError((error) {
-  //         emit(AddProductErrorState(error.toString()));
-  //   });
-  //   // firestore
-  //   //     .collection('products')
-  //   //     .add(product.toProductsJson())
-  //   //     .then((value) {
-  //   //       emit(AddProductSuccessState() as JorismState);
-  //   // })
-  //   //     .catchError((error) {
-  //   //       emit(AddProductErrorState(error.toString()) as JorismState);
-  //   // });
-  // }
 
-  Future<void> addProduct(ProductsModel product) async {
+  Future<void> addProduct(ProductsModel product, String userId) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    await firestore.collection('products').doc(product.productId).set(product.toProductsJson())
-        .whenComplete(() {
-          emit(AddProductSuccessState());
+    await firestore
+        .collection('products')
+        .doc(product.productId)
+        .set(product.toProductsJson())
+        .whenComplete(() async {
+      await firestore
+          .collection('products')
+          .doc(product.productId)
+          .collection('userProducts')
+          .doc(userId)
+          .set(product.toProductsJson())
+          .then((value) {
+            emit(AddUserProductSuccessState());
+            print('User Product Added Successfully');
+      })
+          .catchError((error) {
+            emit(AddUserProductErrorState(error.toString()));
+      });
+      emit(AddProductSuccessState());
       print('Product added successfully');
     }).catchError((error) {
       emit(AddProductErrorState(error.toString()));
-      // print('Error adding product: $error');
+      print('Error adding product: $error');
     });
   }
 
-
   File? imageFile;
-
+  bool selectImageColor = false;
   ImagePicker picker = ImagePicker();
   late Reference firebaseStorageRef;
-  Future<String> fileUpload(File file,String valueName) async {
+
+  Future<String> fileUpload(File file, String valueName) async {
     String result = '';
     firebaseStorageRef = FirebaseStorage.instance
         .ref()
@@ -115,14 +108,16 @@ class JorismCubit extends Cubit<JorismState> {
     });
     return result;
   }
+
   chooseSubjectImage(ImageSource source) async {
+    emit(ImageLoadingState());
     final pickedFile = await picker.pickImage(source: source);
     if (pickedFile!.path.isEmpty) {
       retrieveLostData();
       emit(UploadImageErrorState());
     } else {
       imageFile = File(pickedFile.path);
-      print(imageFile);
+      print('Image Path=> ${imageFile}');
       emit(ImageSuccessState());
     }
   }
@@ -131,9 +126,10 @@ class JorismCubit extends Cubit<JorismState> {
     final LostDataResponse response = await picker.retrieveLostData();
     if (response.file != null) {
       imageFile = File(response.file!.path);
+      print('image path ==> ${imageFile}');
       emit(UploadImageSuccessState());
     } else {
-      // log('response.file : ${response.file}');
+      emit(UploadImageErrorState());
     }
   }
 }
