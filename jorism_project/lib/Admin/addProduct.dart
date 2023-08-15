@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -192,7 +193,14 @@ class AddProductsScreen extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () async {
-                              // await chooseSubjectImage(ImageSource.gallery);
+                              await addProductCubit.chooseSubjectImage(ImageSource.gallery);
+                              if (addProductCubit.imageFile != null) {
+                                selectedImageUrl = await addProductCubit
+                                    .fileUpload(addProductCubit.imageFile!, 'UsersImage')
+                                    .whenComplete(() {
+                                    selectImageColor = !selectImageColor;
+                                });
+                              }
                               // if (imageFile != null) {
                               // ...
                               // }
@@ -214,47 +222,51 @@ class AddProductsScreen extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 20),
-                      defaultLoginButton(
-                        radius: 8.0,
-                        fontSize: 18,
-                        backround: Color(0xFF4F2E1D),
-                        function: () async {
-                          var id = Uuid().v4();
-                          var model = ProductsModel(
-                              productId: id,
-                              productName: productName.text,
-                              productPrice: int.parse(productPrice.text),
-                              productDescription: productDescription.text,
-                              productDate: addProductCubit.selectedDate.toString(),
-                              productTime: productTime.text,
-                              productAddress: productLocation.text,
-                              productImage: '',
-                              quantity: 0);
-                          if (productDescription.text.isEmpty) {
-                            showToast(
-                                text: 'Fill the description',
-                                state: ToastStates.Warning);
-                          } else if (productName.text.isEmpty) {
-                            showToast(
-                                text: 'Fill the Name',
-                                state: ToastStates.Warning);
-                          } else if (productLocation.text.isEmpty) {
-                            showToast(
-                                text: 'Fill the Address',
-                                state: ToastStates.Warning);
-                          } else {
-                            await addProductCubit
-                                .addProduct(model)
-                                .whenComplete(() {
-                              navigators.navigatorWithBack(
-                                  context, AdminProfileScreen());
-                            });
-                            showToast(
-                                text: 'Product Added Successfully',
-                                state: ToastStates.Success);
-                          }
-                        },
-                        text: "Add product",
+                      ConditionalBuilder(
+                        condition: state is !AddProductLoadingState,
+                        builder: (context)=>defaultLoginButton(
+                          radius: 8.0,
+                          fontSize: 18,
+                          backround: Color(0xFF4F2E1D),
+                          function: () async {
+                            var id = Uuid().v4();
+                            var model = ProductsModel(
+                                productId: id,
+                                productName: productName.text,
+                                productPrice: int.parse(productPrice.text),
+                                productDescription: productDescription.text,
+                                productDate: addProductCubit.selectedDate.toString(),
+                                productTime: productTime.text,
+                                productAddress: productLocation.text,
+                                productImage:  selectedImageUrl,
+                                quantity: 0);
+                            if (productDescription.text.isEmpty) {
+                              showToast(
+                                  text: 'Fill the description',
+                                  state: ToastStates.Warning);
+                            } else if (productName.text.isEmpty) {
+                              showToast(
+                                  text: 'Fill the Name',
+                                  state: ToastStates.Warning);
+                            } else if (productLocation.text.isEmpty) {
+                              showToast(
+                                  text: 'Fill the Address',
+                                  state: ToastStates.Warning);
+                            } else {
+                              await addProductCubit
+                                  .addProduct(model)
+                                  .whenComplete(() {
+                                navigators.navigatorWithBack(
+                                    context, AdminProfileScreen());
+                              });
+                              showToast(
+                                  text: 'Product Added Successfully',
+                                  state: ToastStates.Success);
+                            }
+                          },
+                          text: "Add product",
+                        ),
+                        fallback: (context)=>Center(child: CircularProgressIndicator()),
                       ),
                     ],
                   ),
