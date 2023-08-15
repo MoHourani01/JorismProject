@@ -1,3 +1,5 @@
+import 'package:jorism_project/models/products_model.dart';
+
 abstract class JorismState{}
 
 class InitialJorismState extends JorismState{}
@@ -50,3 +52,20 @@ class AddUserProductErrorState extends JorismState{
 class DateTimeLoadingState extends JorismState{}
 class DateTimeSuccessState extends JorismState{}
 class DateTimeErrorState extends JorismState{}
+
+class GetUserProductLoadingState extends JorismState{}
+class GetUserProductSuccessState extends JorismState{
+  // final List<ProductsModel>userProducts;
+  // GetUserProductSuccessState(this.userProducts);
+}
+class GetUserProductErrorState extends JorismState{
+  final String error;
+  GetUserProductErrorState(this.error);
+}
+
+class UserProductsRetreivedLoadingState extends JorismState{}
+class UserProductsRetreivedSuccessState extends JorismState{}
+class UserProductsRetreivedErrorState extends JorismState{
+  final String error;
+  UserProductsRetreivedErrorState(this.error);
+}
