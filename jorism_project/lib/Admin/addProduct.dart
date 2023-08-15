@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,6 +10,7 @@ import 'package:jorism_project/Admin/Admin_Profile_Screen.dart';
 import 'package:jorism_project/cubit/cubit.dart';
 import 'package:jorism_project/cubit/state.dart';
 import 'package:jorism_project/models/products_model.dart';
+import 'package:jorism_project/registration/registration_cubit/registration_cubit.dart';
 import 'package:jorism_project/screens/bottom_nav_bar/bottom_nav_bar_widget.dart';
 import 'package:jorism_project/shared/components/component.dart';
 import 'package:jorism_project/shared/components/constants.dart';
@@ -27,29 +29,18 @@ class AddProductsScreen extends StatelessWidget {
 
   TextEditingController productLocation = TextEditingController();
 
-  // Future<void> datePicker()async{
-  //  await showDatePicker(
-  //    context: context,
-  //    initialDate: DateTime.now(),
-  //    firstDate: DateTime.now(),
-  //    lastDate: DateTime(2030),
-  //  );
-  // }
-  File? imageFile;
-
-  ImagePicker picker = ImagePicker();
-
   bool selectImageColor = false;
 
   String selectedImageUrl = '';
 
-  bool selectFileColor = false;
-
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<JorismCubit, JorismState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is ImageSuccessState){
+          selectImageColor=true;
+        }
+      },
       builder: (context, state) {
         void pickDate(BuildContext context) {
           JorismCubit.get(context).datePicker(context);
@@ -145,7 +136,6 @@ class AddProductsScreen extends StatelessWidget {
                           // datePicker();
                           // addProductCubit.datePicker(context);
                           pickDate(context);
-
                         },
                       ),
                       SizedBox(height: 10),
@@ -193,80 +183,87 @@ class AddProductsScreen extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () async {
-                              await addProductCubit.chooseSubjectImage(ImageSource.gallery);
+                              await addProductCubit.chooseSubjectImage(
+                                  ImageSource.gallery);
                               if (addProductCubit.imageFile != null) {
                                 selectedImageUrl = await addProductCubit
-                                    .fileUpload(addProductCubit.imageFile!, 'UsersImage')
+                                    .fileUpload(addProductCubit.imageFile!,
+                                    'UsersImage')
                                     .whenComplete(() {
-                                    selectImageColor = !selectImageColor;
+                                  selectImageColor = !selectImageColor;
                                 });
+                                print('Image Selected');
                               }
-                              // if (imageFile != null) {
-                              // ...
-                              // }
                             },
                             child: Text(
                               "Select Image",
                               style: TextStyle(
-                                color: Colors.blueGrey.shade700.withOpacity(1),
+                                color: Colors.blueGrey.shade700.withOpacity(
+                                    1),
                               ),
                             ),
                           ),
                           SizedBox(width: 190),
                           Icon(
-                            selectImageColor == false
-                                ? Icons.check_circle_outline
-                                : Icons.check_circle,
+                            selectImageColor == true
+                                ? Icons.check_circle
+                                : Icons.check_circle_outline,
                             color: Colors.green,
                           ),
                         ],
                       ),
                       SizedBox(height: 20),
                       ConditionalBuilder(
-                        condition: state is !AddProductLoadingState,
-                        builder: (context)=>defaultLoginButton(
-                          radius: 8.0,
-                          fontSize: 18,
-                          backround: Color(0xFF4F2E1D),
-                          function: () async {
-                            var id = Uuid().v4();
-                            var model = ProductsModel(
-                                productId: id,
-                                productName: productName.text,
-                                productPrice: int.parse(productPrice.text),
-                                productDescription: productDescription.text,
-                                productDate: addProductCubit.selectedDate.toString(),
-                                productTime: productTime.text,
-                                productAddress: productLocation.text,
-                                productImage:  selectedImageUrl,
-                                quantity: 0);
-                            if (productDescription.text.isEmpty) {
-                              showToast(
-                                  text: 'Fill the description',
-                                  state: ToastStates.Warning);
-                            } else if (productName.text.isEmpty) {
-                              showToast(
-                                  text: 'Fill the Name',
-                                  state: ToastStates.Warning);
-                            } else if (productLocation.text.isEmpty) {
-                              showToast(
-                                  text: 'Fill the Address',
-                                  state: ToastStates.Warning);
-                            } else {
-                              await addProductCubit
-                                  .addProduct(model)
-                                  .whenComplete(() {
-                                navigators.navigatorWithBack(
-                                    context, AdminProfileScreen());
-                              });
-                              showToast(
-                                  text: 'Product Added Successfully',
-                                  state: ToastStates.Success);
-                            }
-                          },
-                          text: "Add product",
-                        ),
-                        fallback: (context)=>Center(child: CircularProgressIndicator()),
+                        condition: state is! AddProductLoadingState,
+                        builder: (context) =>
+                            defaultLoginButton(
+                              radius: 8.0,
+                              fontSize: 18,
+                              backround: Color(0xFF4F2E1D),
+                              function: () async {
+                                var id = Uuid().v4();
+                                var user = RegistrationCubit
+                                    .get(context)
+                                    .userModel!
+                                    .username;
+                                var model = ProductsModel(
+                                    productId: id,
+                                    productName: productName.text,
+                                    productPrice: int.parse(productPrice.text),
+                                    productDescription: productDescription.text,
+                                    productDate: addProductCubit.selectedDate
+                                        .toString(),
+                                    productTime: productTime.text,
+                                    productAddress: productLocation.text,
+                                    productImage: selectedImageUrl,
+                                    quantity: 0);
+                                if (productDescription.text.isEmpty) {
+                                  showToast(
+                                      text: 'Fill the description',
+                                      state: ToastStates.Warning);
+                                } else if (productName.text.isEmpty) {
+                                  showToast(
+                                      text: 'Fill the Name',
+                                      state: ToastStates.Warning);
+                                } else if (productLocation.text.isEmpty) {
+                                  showToast(
+                                      text: 'Fill the Address',
+                                      state: ToastStates.Warning);
+                                } else {
+                                  await addProductCubit
+                                      .addProduct(model, user as String)
+                                      .whenComplete(() {
+                                    navigators.navigatePop(context);
+                                  });
+                                  showToast(
+                                      text: 'Product Added Successfully',
+                                      state: ToastStates.Success);
+                                }
+                              },
+                              text: "Add product",
+                            ),
+                        fallback: (context) =>
+                            Center(child: CircularProgressIndicator()),
                       ),
                     ],
                   ),

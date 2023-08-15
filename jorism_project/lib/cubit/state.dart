@@ -22,6 +22,7 @@ class RetrieveLostImageErrorState extends JorismState{}
 class UploadImageSuccessState extends JorismState{}
 
 class ImageSuccessState extends JorismState{}
+class ImageLoadingState extends JorismState{}
 
 class UploadImageErrorState extends JorismState{
   // final String error;
@@ -39,3 +40,13 @@ class AddProductErrorState extends JorismState{
   final String error;
   AddProductErrorState(this.error);
 }
+class AddUserProductLoadingState extends JorismState{}
+class AddUserProductSuccessState extends JorismState{}
+class AddUserProductErrorState extends JorismState{
+  final String error;
+  AddUserProductErrorState(this.error);
+}
+
+class DateTimeLoadingState extends JorismState{}
+class DateTimeSuccessState extends JorismState{}
+class DateTimeErrorState extends JorismState{}

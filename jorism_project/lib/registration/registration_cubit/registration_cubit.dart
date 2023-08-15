@@ -61,35 +61,8 @@ class RegistrationCubit extends Cubit<RegisterationState> {
   }
 
   UserModel? userModel;
-
-  // List<UserModel>? userModel;
-  // String? password=UserModel.userModel[0][3];
-  // UserModel?password;
   Future<void> loginToHome({required String email, required String password}) async {
     emit(LoginLoadingState());
-    // userName=UserModel.fromJson(userName!.username as Map<String, dynamic>);
-    // userModel= await Registration.getUserData();
-    // UserModel? login = userModel!.firstWhere(
-    //       (user) => user.email == email,
-    //   orElse: () => UserModel(
-    //     userId: '',
-    //     username: '',
-    //     email: '',
-    //     password: '',
-    //     phone: '',
-    //   ),
-    // );
-    // // emit(LoginSuccessState());
-    // if (login.password == passwordController) {
-    //   // User found and password matches
-    //   userName = login;
-    //   password = login;
-    //
-    //   emit(LoginSuccessState());
-    // } else {
-    //   // User not found or password doesn't match
-    //   emit(LoginErrorState());
-    // }
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
@@ -260,7 +233,4 @@ class RegistrationCubit extends Cubit<RegisterationState> {
     });
   }
 
-  Future<void> logout() async {
-    await firebaseAuth.signOut();
-  }
 }
