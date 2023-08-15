@@ -29,6 +29,10 @@ class AddProductsScreen extends StatelessWidget {
 
   TextEditingController productLocation = TextEditingController();
 
+  File? imageFile;
+
+  ImagePicker picker = ImagePicker();
+
   bool selectImageColor = false;
 
   String selectedImageUrl = '';
@@ -37,8 +41,8 @@ class AddProductsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<JorismCubit, JorismState>(
       listener: (context, state) {
-        if (state is ImageSuccessState){
-          selectImageColor=true;
+        if (state is ImageSuccessState) {
+          selectImageColor = true;
         }
       },
       builder: (context, state) {
@@ -141,7 +145,7 @@ class AddProductsScreen extends StatelessWidget {
                       SizedBox(height: 10),
                       defaultLoginFormField(
                         controller: productTime,
-                        type: TextInputType.datetime,
+                        type: TextInputType.text,
                         labelText: 'Product Time',
                         labilStyleColor: Color(0xFF4F2E1D),
                         validate: (String? value) {
@@ -167,50 +171,86 @@ class AddProductsScreen extends StatelessWidget {
                         prefix: Icons.location_on,
                       ),
                       SizedBox(height: 10),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () async {
-                              // await chooseSubjectImage(ImageSource.camera);
-                              // if (imageFile != null) {
-                              // ...
-                              // }}
-                            },
-                            icon: Icon(
-                              Icons.camera_alt_rounded,
-                              color: Color(0xFF4F2E1D),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                ConditionalBuilder(
+                                    condition: state is! ImageLoadingState,
+                                    builder: (context)=>IconButton(
+                                  onPressed: () async {
+                                    // await chooseSubjectImage(ImageSource.camera);
+                                    // if (imageFile != null) {
+                                    // ...
+                                    // }}
+                                    await addProductCubit
+                                        .chooseSubjectImage(
+                                        ImageSource.camera);
+                                    if (addProductCubit.imageFile != null) {
+                                      selectedImageUrl =
+                                      await addProductCubit
+                                          .fileUpload(
+                                          addProductCubit.imageFile!,
+                                          'UsersImage')
+                                          .whenComplete(() {
+                                        selectImageColor =
+                                        !selectImageColor;
+                                      });
+                                      print('Image Selected');
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.camera_alt_rounded,
+                                    color: Color(0xFF4F2E1D),
+                                  ),
+                                ),
+                                    fallback: (context)=>Center(child: CircularProgressIndicator(),
+                                    )),
+                                ConditionalBuilder(
+                                    condition:state is! ImageLoadingState,
+                                    builder: (context) => TextButton(
+                                      onPressed: () async {
+                                        await addProductCubit
+                                            .chooseSubjectImage(
+                                            ImageSource.gallery);
+                                        if (addProductCubit.imageFile != null) {
+                                          selectedImageUrl =
+                                          await addProductCubit
+                                              .fileUpload(
+                                              addProductCubit.imageFile!,
+                                              'UsersImage')
+                                              .whenComplete(() {
+                                            selectImageColor =
+                                            !selectImageColor;
+                                          });
+                                          print('Image Selected');
+                                        }
+                                      },
+                                      child: Text(
+                                        "Select Image",
+                                        style: TextStyle(
+                                          color: Colors.blueGrey.shade700
+                                              .withOpacity(
+                                              1),
+                                        ),
+                                      ),
+                                    ),
+                                    fallback: (context) => Center(child: CircularProgressIndicator(),
+                                    )),
+                              ],
                             ),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              await addProductCubit.chooseSubjectImage(
-                                  ImageSource.gallery);
-                              if (addProductCubit.imageFile != null) {
-                                selectedImageUrl = await addProductCubit
-                                    .fileUpload(addProductCubit.imageFile!,
-                                    'UsersImage')
-                                    .whenComplete(() {
-                                  selectImageColor = !selectImageColor;
-                                });
-                                print('Image Selected');
-                              }
-                            },
-                            child: Text(
-                              "Select Image",
-                              style: TextStyle(
-                                color: Colors.blueGrey.shade700.withOpacity(
-                                    1),
-                              ),
+                            // SizedBox(width: 190),
+                            Icon(
+                              selectImageColor == false
+                                  ? Icons.check_circle_outline
+                                  : Icons.check_circle,
+                              color: Colors.green,
                             ),
-                          ),
-                          SizedBox(width: 190),
-                          Icon(
-                            selectImageColor == true
-                                ? Icons.check_circle
-                                : Icons.check_circle_outline,
-                            color: Colors.green,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       SizedBox(height: 20),
                       ConditionalBuilder(

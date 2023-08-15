@@ -51,7 +51,7 @@ class JorismCubit extends Cubit<JorismState> {
       emit(DateTimeSuccessState());
       selectedDate = value!;
       print(selectedDate);
-    }).catchError((error){
+    }).catchError((error) {
       emit(DateTimeErrorState());
       print('date time error=> ${error}');
     });
@@ -61,7 +61,6 @@ class JorismCubit extends Cubit<JorismState> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   ProductsModel? productsModel;
-
 
   Future<void> addProduct(ProductsModel product, String userId) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -77,11 +76,10 @@ class JorismCubit extends Cubit<JorismState> {
           .doc(userId)
           .set(product.toProductsJson())
           .then((value) {
-            emit(AddUserProductSuccessState());
-            print('User Product Added Successfully');
-      })
-          .catchError((error) {
-            emit(AddUserProductErrorState(error.toString()));
+        emit(AddUserProductSuccessState());
+        print('User Product Added Successfully');
+      }).catchError((error) {
+        emit(AddUserProductErrorState(error.toString()));
       });
       emit(AddProductSuccessState());
       print('Product added successfully');
@@ -131,5 +129,87 @@ class JorismCubit extends Cubit<JorismState> {
     } else {
       emit(UploadImageErrorState());
     }
+  }
+
+  // Future<List<ProductsModel>> getUserProducts(String userId) async{
+  //   firestore=FirebaseFirestore.instance;
+  //   QuerySnapshot getProducts = await firestore
+  //       .collection('products')
+  //       .doc(userId)
+  //       .collection('userProducts')
+  //       .get();
+  //   List<ProductsModel> userProducts = getProducts.docs.map((doc) {
+  //     Map<String, dynamic> products = doc.data() as Map<String, dynamic>;
+  //     return ProductsModel.fromProductsJson(products);
+  //   }).toList();
+  //   return userProducts;
+  // }
+
+  // Future<List<ProductsModel>> getUserProducts(String userId) async {
+  //    firestore = FirebaseFirestore.instance;
+  //    emit(GetUserProductLoadingState());
+  //   return firestore
+  //       .collection('products')
+  //       .doc(userId)
+  //       .collection('userProducts')
+  //       .get()
+  //       .then((getProducts) {
+  //     List<ProductsModel> userProducts = getProducts.docs.map((doc) {
+  //       Map<String, dynamic> products = doc.data() as Map<String, dynamic>;
+  //       emit(GetUserProductSuccessState());
+  //       return ProductsModel.fromProductsJson(products);
+  //     }).toList();
+  //
+  //     return userProducts;
+  //   })
+  //       .catchError((error) {
+  //         emit(GetUserProductErrorState(error.toString()));
+  //     print('Error fetching user products: $error');
+  //     return [];
+  //   });
+  // }
+
+  List<ProductsModel> userProductsList = []; // Initialize an empty list
+  // Future<void> getUserProducts(String userId) async {
+  //   try {
+  //     print('Fetching user products for userId: $userId');
+  //     emit(GetUserProductLoadingState());
+  //
+  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //     QuerySnapshot getProducts = await firestore
+  //         .collection('products')
+  //         .doc(userId)
+  //         .collection('userProducts')
+  //         .get();
+  //
+  //     print('Fetched ${getProducts.docs.length} products');
+  //
+  //     userProductsList = getProducts.docs.map((doc) {
+  //       Map<String, dynamic> products = doc.data() as Map<String, dynamic>;
+  //       return ProductsModel.fromProductsJson(products);
+  //     }).toList();
+  //
+  //     print('Populated userProductsList with ${userProductsList.length} products');
+  //
+  //     emit(GetUserProductSuccessState(userProductsList));
+  //   } catch (error) {
+  //     emit(GetUserProductErrorState(error.toString()));
+  //     print('Error fetching user products: $error');
+  //   }
+  // }
+  void getUserProducts() {
+    firestore
+        .collection('products')
+        .get()
+        .then((value) {
+          value.docs.forEach((element) { 
+            userProductsList.add(ProductsModel.fromProductsJson(element.data()));
+          });
+          print('the length of the list=> ${userProductsList}');
+          emit(GetUserProductSuccessState());
+    })
+        .catchError((error) {
+          emit(GetUserProductErrorState(error.toString()));
+    });
   }
 }
