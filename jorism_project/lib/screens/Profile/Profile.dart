@@ -23,6 +23,11 @@ class ProfileScreen extends StatelessWidget {
 
         showToast(text: 'Logged out', state: ToastStates.Success);
       }
+      if (state is DeletedAccountSuccessCollState){
+        navigators.navigatePushReplacement(context, LoginScreen());
+
+      showToast(text: 'Deleted Successful', state: ToastStates.Success);
+      }
     },
     builder: (context, state){
       var profileCubit=RegistrationCubit.get(context);
@@ -88,7 +93,8 @@ class ProfileScreen extends StatelessWidget {
                               Expanded(
                                 child: defaultProfileFormField(
                                     onPressed: ()
-                                    { uesrnameDialog(context);
+                                    {
+                                      uesrnameDialog(context);
                                     },
                                     title: '${profileCubit.userModel?.username??''}',
                                     Ficon: Icons.man,
@@ -202,7 +208,7 @@ class ProfileScreen extends StatelessWidget {
                                           ),
                                           child:
                                           TextButton(onPressed: () {
-
+                                            RegistrationCubit.get(context).deleteUser();
                                           },
                                             child: Text('Delete Account' ,
                                               style: TextStyle(

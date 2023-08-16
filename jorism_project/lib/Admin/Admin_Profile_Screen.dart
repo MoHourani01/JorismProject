@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jorism_project/Admin/Admin_AgentScreen.dart';
@@ -5,6 +6,7 @@ import 'package:jorism_project/Admin/addProduct.dart';
 import 'package:jorism_project/popups_widgets/mobile_number_popup.dart';
 import 'package:jorism_project/popups_widgets/password_popup.dart';
 import 'package:jorism_project/popups_widgets/username_popup.dart';
+import 'package:jorism_project/registration/login/login_screen.dart';
 import 'package:jorism_project/registration/registration_cubit/registration_cubit.dart';
 import 'package:jorism_project/registration/registration_cubit/registration_state.dart';
 import 'package:jorism_project/shared/components/component.dart';
@@ -15,7 +17,17 @@ class AdminProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegistrationCubit,RegisterationState>(
-      listener:(context,state){},
+      listener:(context,state){
+        if (state is DeletedAccountSuccessCollState){
+          navigators.navigatePushReplacement(context, LoginScreen());
+          showToast(text: 'Deleted Successful', state: ToastStates.Success);
+        }
+        if (state is UserLogoutSuccessState){
+          navigators.navigatePushReplacement(context, LoginScreen());
+          showToast(text: 'Logged out', state: ToastStates.Success);
+
+        }
+      },
       builder:(context, state){
         var agentCubit=RegistrationCubit.get(context);
         return SafeArea(
@@ -198,7 +210,10 @@ class AdminProfileScreen extends StatelessWidget {
                                             ],
                                           ),
                                           child:
-                                          TextButton(onPressed: () {  },
+                                          TextButton(onPressed: (
+                                              ) {
+                                            RegistrationCubit.get(context).deleteUser();
+                                            },
                                             child: Text('Delete Account',
                                               style: TextStyle(
                                                 fontSize: 17,
@@ -226,7 +241,9 @@ class AdminProfileScreen extends StatelessWidget {
                                                 ],
                                               ),
                                               child:
-                                              TextButton(onPressed: () {  },
+                                              TextButton(onPressed: () {
+                                                RegistrationCubit.get(context).logoutUser();
+                                              },
                                                 child: Text('Log Out',
                                                   style: TextStyle(
                                                       fontSize: 17,

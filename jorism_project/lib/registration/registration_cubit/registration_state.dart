@@ -123,5 +123,12 @@ class UserLogoutErrorState extends RegisterationState{
   final String error;
   UserLogoutErrorState(this.error);
 }
+class LoadingDeletedAccountState extends RegisterationState{}
+
+class DeletedAccountSuccessAuthState extends RegisterationState{}
+
+class DeletedAccountErrorState extends RegisterationState{}
+
+class DeletedAccountSuccessCollState extends RegisterationState{}
 
 
