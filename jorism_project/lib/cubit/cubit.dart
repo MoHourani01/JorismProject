@@ -132,72 +132,7 @@ class JorismCubit extends Cubit<JorismState> {
     }
   }
 
-  // Future<List<ProductsModel>> getUserProducts(String userId) async{
-  //   firestore=FirebaseFirestore.instance;
-  //   QuerySnapshot getProducts = await firestore
-  //       .collection('products')
-  //       .doc(userId)
-  //       .collection('userProducts')
-  //       .get();
-  //   List<ProductsModel> userProducts = getProducts.docs.map((doc) {
-  //     Map<String, dynamic> products = doc.data() as Map<String, dynamic>;
-  //     return ProductsModel.fromProductsJson(products);
-  //   }).toList();
-  //   return userProducts;
-  // }
-
-  // Future<List<ProductsModel>> getUserProducts(String userId) async {
-  //    firestore = FirebaseFirestore.instance;
-  //    emit(GetUserProductLoadingState());
-  //   return firestore
-  //       .collection('products')
-  //       .doc(userId)
-  //       .collection('userProducts')
-  //       .get()
-  //       .then((getProducts) {
-  //     List<ProductsModel> userProducts = getProducts.docs.map((doc) {
-  //       Map<String, dynamic> products = doc.data() as Map<String, dynamic>;
-  //       emit(GetUserProductSuccessState());
-  //       return ProductsModel.fromProductsJson(products);
-  //     }).toList();
-  //
-  //     return userProducts;
-  //   })
-  //       .catchError((error) {
-  //         emit(GetUserProductErrorState(error.toString()));
-  //     print('Error fetching user products: $error');
-  //     return [];
-  //   });
-  // }
-
-  List<ProductsModel> userProductsList = []; // Initialize an empty list
-  // Future<void> getUserProducts(String userId) async {
-  //   try {
-  //     print('Fetching user products for userId: $userId');
-  //     emit(GetUserProductLoadingState());
-  //
-  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
-  //     QuerySnapshot getProducts = await firestore
-  //         .collection('products')
-  //         .doc(userId)
-  //         .collection('userProducts')
-  //         .get();
-  //
-  //     print('Fetched ${getProducts.docs.length} products');
-  //
-  //     userProductsList = getProducts.docs.map((doc) {
-  //       Map<String, dynamic> products = doc.data() as Map<String, dynamic>;
-  //       return ProductsModel.fromProductsJson(products);
-  //     }).toList();
-  //
-  //     print('Populated userProductsList with ${userProductsList.length} products');
-  //
-  //     emit(GetUserProductSuccessState(userProductsList));
-  //   } catch (error) {
-  //     emit(GetUserProductErrorState(error.toString()));
-  //     print('Error fetching user products: $error');
-  //   }
-  // }
+  List<ProductsModel> userProductsList = [];
   List<ProductsModel> userProducts=[];
   void getUserProducts() {
     firestore
@@ -272,7 +207,6 @@ class JorismCubit extends Cubit<JorismState> {
           .doc(product.productId)
           .delete()
           .then((value) {
-        // Remove the deleted product from the userProducts list
         userProductsList.removeWhere((item) => item.productId == product.productId);
         emit(DeleteProductSuccessState());
       })
@@ -292,8 +226,7 @@ class JorismCubit extends Cubit<JorismState> {
   }
   List<UserModel> agentUsers = [];
   List<UserModel> getAgentUsers() {
-
-    // Fetch users where isAgent is true
+    agentUsers.clear();
     firestore.collection('users').where('isAgent', isEqualTo: true).get().then(
           (querySnapshot) {
         querySnapshot.docs.forEach((doc) {
