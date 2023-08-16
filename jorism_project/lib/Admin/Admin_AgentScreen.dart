@@ -14,7 +14,7 @@ class AdminAgentDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    JorismCubit.get(context).getUserProducts();
+    JorismCubit.get(context).getUserProductsCollection(RegistrationCubit.get(context).userModel!.userId);
     return BlocConsumer<JorismCubit, JorismState>(
         listener: (context, state) {
           if(state is GetUserProductLoadingState){
@@ -24,7 +24,7 @@ class AdminAgentDetailsScreen extends StatelessWidget {
         builder: (context, state) {
           var agentCubit = JorismCubit.get(context);
 
-          if(state is GetUserProductSuccessState){
+          if(state is GetUserProductSuccessState||state is DeleteProductSuccessState){
             return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
@@ -193,9 +193,9 @@ class AdminAgentDetailsScreen extends StatelessWidget {
                           crossAxisCount: 2,
                           primary: false,
                           shrinkWrap: true,
-                          itemCount: agentCubit.userProductsList.length,
+                          itemCount: agentCubit.userProducts.length,
                           itemBuilder: (BuildContext context, int index) {
-                            ProductsModel product = agentCubit.userProductsList[index];
+                            ProductsModel product = agentCubit.userProducts[index];
                             // List<ProductsModel> product = agentCubit.getUserProducts(RegistrationCubit.get(context).userModel!.userId) as List<ProductsModel>;
                             return Container(
                               height: 255,
@@ -252,9 +252,16 @@ class AdminAgentDetailsScreen extends StatelessWidget {
                                         mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                         children: [
-                                          IconButton(
-                                              onPressed: () {},
-                                              icon: Icon(Icons.outlet)),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 15.0),
+                                            child: Text(
+                                              '${product.productPrice} JD',
+                                              style: TextStyle(
+                                                fontSize: 16,
+
+                                              ),
+                                                ),
+                                          ),
                                           IconButton(
                                               onPressed: () {
                                                 navigators.navigatorWithBack(
@@ -269,7 +276,10 @@ class AdminAgentDetailsScreen extends StatelessWidget {
                                     top: 8,
                                     right: 8,
                                     child: IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        agentCubit.deleteProduct(product, RegistrationCubit.get(context).userModel!.userId);
+                                        showToast(text: 'Deleted Successfully', state: ToastStates.Success);
+                                      },
                                       icon: Icon(Icons.delete),
                                       color: Colors.red,
                                     ),

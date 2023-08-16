@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jorism_project/cubit/state.dart';
 import 'package:jorism_project/models/products_model.dart';
+import 'package:jorism_project/models/user_model.dart';
 import 'package:jorism_project/screens/Agencies/Agencies_Screen.dart';
 import 'package:jorism_project/screens/Profile/Profile.dart';
 import 'package:jorism_project/screens/home/home_screen.dart';
@@ -68,13 +69,13 @@ class JorismCubit extends Cubit<JorismState> {
         .collection('products')
         .doc(product.productId)
         .set(product.toProductsJson())
-        .whenComplete(() async {
-      await firestore
-          .collection('products')
-          .doc(product.productId)
-          .collection('userProducts')
-          .doc(userId)
-          .set(product.toProductsJson())
+      //   .whenComplete(() async {
+      // await firestore
+      //     .collection('products')
+      //     .doc(product.productId)
+      //     .collection('userProducts')
+      //     .doc(userId)
+      //     .set(product.toProductsJson())
           .then((value) {
         emit(AddUserProductSuccessState());
         print('User Product Added Successfully');
@@ -83,10 +84,10 @@ class JorismCubit extends Cubit<JorismState> {
       });
       emit(AddProductSuccessState());
       print('Product added successfully');
-    }).catchError((error) {
-      emit(AddProductErrorState(error.toString()));
-      print('Error adding product: $error');
-    });
+    // }).catchError((error) {
+    //   emit(AddProductErrorState(error.toString()));
+    //   print('Error adding product: $error');
+    // });
   }
 
   File? imageFile;
@@ -197,6 +198,7 @@ class JorismCubit extends Cubit<JorismState> {
   //     print('Error fetching user products: $error');
   //   }
   // }
+  List<ProductsModel> userProducts=[];
   void getUserProducts() {
     firestore
         .collection('products')
@@ -211,5 +213,81 @@ class JorismCubit extends Cubit<JorismState> {
         .catchError((error) {
           emit(GetUserProductErrorState(error.toString()));
     });
+  }
+
+  Future<void> addUserCollection(ProductsModel product,UserModel userId)async {
+    userId.isAgent=true;
+    await firestore
+        .collection('users')
+        .doc(userId.userId)
+        .set(userId.toJson())
+      .whenComplete(() async {
+    if (userId.isAgent=true){
+      await firestore
+          .collection('users')
+          .doc(userId.userId)
+          .collection('userProducts')
+          .add(product.toProductsJson())
+          .then((value) {
+        emit(AddUserProductSuccessState());
+        print('User Product Added Successfully');
+      })
+          .catchError((error) {
+        emit(AddUserProductErrorState(error.toString()));
+      });
+    }
+    emit(AddProductSuccessState());
+    print('Product added successfully');
+    }).catchError((error) {
+      emit(AddProductErrorState(error.toString()));
+      print('Error adding product: $error');
+    });}
+
+  void getUserProductsCollection(String userId) {
+    userProducts.clear();
+    firestore
+        .collection('users/${userId}/userProducts')
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        userProducts.add(ProductsModel.fromProductsJson(element.data()));
+      });
+      print('the length of the list=> ${userProducts}');
+      emit(GetUserProductSuccessState());
+    })
+        .catchError((error) {
+      emit(GetUserProductErrorState(error.toString()));
+    });
+  }
+
+  void deleteProduct(ProductsModel product, String userId){
+    emit(DeleteProductLoadingState());
+    firestore
+        .collection('users/${userId}/userProducts')
+        .doc(userId)
+        .delete()
+        .then((value) {
+      firestore
+          .collection('products')
+          .doc(product.productId)
+          .delete()
+          .then((value) {
+        // Remove the deleted product from the userProducts list
+        userProductsList.removeWhere((item) => item.productId == product.productId);
+        emit(DeleteProductSuccessState());
+      })
+          .catchError((error) {
+        print('Error deleting product from products collection: $error');
+        emit(DeleteProductErrorState(error.toString()));
+      });
+      userProducts.removeWhere((item) => item.productId == product.productId);
+      print('deleted from the products list');
+      emit(DeleteProductSuccessState());
+    })
+        .catchError((error) {
+      print('Error deleting product from userProducts collection: $error');
+      emit(DeleteProductErrorState(error.toString()));
+    });
+
   }
 }

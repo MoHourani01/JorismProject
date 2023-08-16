@@ -69,3 +69,10 @@ class UserProductsRetreivedErrorState extends JorismState{
   final String error;
   UserProductsRetreivedErrorState(this.error);
 }
+
+class DeleteProductLoadingState extends JorismState{}
+class DeleteProductSuccessState extends JorismState{}
+class DeleteProductErrorState extends JorismState{
+  final String error;
+  DeleteProductErrorState(this.error);
+}
