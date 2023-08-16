@@ -38,6 +38,18 @@ class JorismCubit extends Cubit<JorismState> {
   //   emit(JorismChangeBottomNavBarState());
   // }
 
+  int activatedIndex = 0;
+  int activatedAgencyIndex = 0;
+  void activatIndex(int index){
+    activatedIndex=index;
+    // emit(ActivatedIndexState());
+  }
+
+  void activatAgencyIndex(int index){
+    activatedAgencyIndex=index;
+    // emit(ActivatedAgencyState());
+  }
+
   DateTime selectedDate = DateTime.now();
   String formattedSelectedDate = '';
 
@@ -95,6 +107,11 @@ class JorismCubit extends Cubit<JorismState> {
   ImagePicker picker = ImagePicker();
   late Reference firebaseStorageRef;
 
+  void selectedColorImage(){
+    selectImageColor=!selectImageColor;
+    emit(SelectedImageColorState());
+  }
+
   Future<String> fileUpload(File file, String valueName) async {
     String result = '';
     firebaseStorageRef = FirebaseStorage.instance
@@ -135,6 +152,8 @@ class JorismCubit extends Cubit<JorismState> {
   List<ProductsModel> userProductsList = [];
   List<ProductsModel> userProducts=[];
   void getUserProducts() {
+    userProductsList.clear();
+    emit(GetUserProductLoadingState());
     firestore
         .collection('products')
         .get()
@@ -161,8 +180,8 @@ class JorismCubit extends Cubit<JorismState> {
       await firestore
           .collection('users')
           .doc(userId.userId)
-          .collection('userProducts')
-          .add(product.toProductsJson())
+          .collection('userProducts').doc(product.productId)
+          .set(product.toProductsJson())
           .then((value) {
         emit(AddUserProductSuccessState());
         print('User Product Added Successfully');
@@ -198,8 +217,10 @@ class JorismCubit extends Cubit<JorismState> {
   void deleteProduct(ProductsModel product, String userId){
     emit(DeleteProductLoadingState());
     firestore
-        .collection('users/${userId}/userProducts')
+        .collection('users')
         .doc(userId)
+        .collection('userProducts')
+        .doc(product.productId)
         .delete()
         .then((value) {
       firestore
@@ -208,6 +229,7 @@ class JorismCubit extends Cubit<JorismState> {
           .delete()
           .then((value) {
         userProductsList.removeWhere((item) => item.productId == product.productId);
+        print('length of userProductsList=> ${userProductsList.length.toInt()}');
         emit(DeleteProductSuccessState());
       })
           .catchError((error) {
@@ -216,16 +238,21 @@ class JorismCubit extends Cubit<JorismState> {
       });
       userProducts.removeWhere((item) => item.productId == product.productId);
       print('deleted from the products list');
-      emit(DeleteProductSuccessState());
+      print('length of userProducts=> ${userProducts.length.toInt()}');
+      print('product id=> ${product.productId.toString()}');
+      emit(DeleteUserProductSuccessState());
     })
         .catchError((error) {
       print('Error deleting product from userProducts collection: $error');
-      emit(DeleteProductErrorState(error.toString()));
+      emit(DeleteUserProductErrorState(error.toString()));
     });
 
   }
+
+
   List<UserModel> agentUsers = [];
   List<UserModel> getAgentUsers() {
+    emit(GetAgetUserLoadingState());
     agentUsers.clear();
     firestore.collection('users').where('isAgent', isEqualTo: true).get().then(
           (querySnapshot) {

@@ -266,7 +266,8 @@ class AgentDetailsScreen extends StatelessWidget {
                                       ),
                                       IconButton(
                                           onPressed: () {
-                                            navigators.navigatorWithBack(context, DetailsScreen());
+                                            ProductsModel productDetail=JorismCubit.get(context).userProductsList[index];
+                                            navigators.navigatorWithBack(context, DetailsScreen(productDetails: productDetail,));
                                           },
                                           icon: Icon(Icons.arrow_forward)),
                                     ],

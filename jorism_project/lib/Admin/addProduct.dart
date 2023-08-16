@@ -99,7 +99,7 @@ class AddProductsScreen extends StatelessWidget {
                       SizedBox(height: 10),
                       defaultLoginFormField(
                         controller: productPrice,
-                        type: TextInputType.text,
+                        type: TextInputType.number,
                         labelText: 'Product Price',
                         labilStyleColor: Color(0xFF4F2E1D),
                         validate: (String? value) {
@@ -199,8 +199,7 @@ class AddProductsScreen extends StatelessWidget {
                                                   addProductCubit.imageFile!,
                                                   'UsersImage')
                                                   .whenComplete(() {
-                                                selectImageColor =
-                                                !selectImageColor;
+                                                addProductCubit.selectedColorImage();
                                               });
                                               print('Image Selected');
                                             }
@@ -230,9 +229,11 @@ class AddProductsScreen extends StatelessWidget {
                                                   addProductCubit.imageFile!,
                                                   'UsersImage')
                                                   .whenComplete(() {
-                                                selectImageColor =
-                                                !selectImageColor;
+                                                // selectImageColor =
+                                                // !selectImageColor;
+                                                addProductCubit.selectedColorImage();
                                               });
+                                              showToast(text: 'Image Selected Successfully', state: ToastStates.Success);
                                               print('Image Selected');
                                             }
                                           },
@@ -253,7 +254,7 @@ class AddProductsScreen extends StatelessWidget {
                             ),
                             // SizedBox(width: 190),
                             Icon(
-                              selectImageColor == false
+                              addProductCubit.selectImageColor == false
                                   ? Icons.check_circle_outline
                                   : Icons.check_circle,
                               color: Colors.green,

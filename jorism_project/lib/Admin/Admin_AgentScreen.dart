@@ -20,11 +20,14 @@ class AdminAgentDetailsScreen extends StatelessWidget {
           if(state is GetUserProductLoadingState){
             Center(child: CircularProgressIndicator());
           }
+          if( state is DeleteUserProductSuccessState){
+            showToast(text: 'Delete Product User', state: ToastStates.Success);
+          }
         },
         builder: (context, state) {
           var agentCubit = JorismCubit.get(context);
 
-          if(state is GetUserProductSuccessState||state is DeleteProductSuccessState){
+          if(state is GetUserProductSuccessState||state is DeleteProductSuccessState|| state is DeleteUserProductSuccessState){
             return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
@@ -264,8 +267,9 @@ class AdminAgentDetailsScreen extends StatelessWidget {
                                           ),
                                           IconButton(
                                               onPressed: () {
+                                                ProductsModel productDetails=agentCubit.userProductsList[index];
                                                 navigators.navigatorWithBack(
-                                                    context, DetailsScreen());
+                                                    context, DetailsScreen(productDetails: productDetails,));
                                               },
                                               icon: Icon(Icons.arrow_forward)),
                                         ],
