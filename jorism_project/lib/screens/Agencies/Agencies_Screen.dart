@@ -16,6 +16,7 @@ class AgenciesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    JorismCubit.get(context).getAgentUsers();
     return BlocConsumer<JorismCubit, JorismState>(
         listener: (context, state) {
         },
@@ -23,6 +24,7 @@ class AgenciesScreen extends StatelessWidget {
           var agentRegisterCubit=RegistrationCubit.get(context);
           var jorismCubit = JorismCubit.get(context);
           // List<UserModel> agentUsers = jorismCubit.getAgentUsers();
+          // List<UserModel> agentUsers = JorismCubit.get(context).getAgentUsers();
           if(state is GetAgentUsersSuccessState){
             return Scaffold(
               appBar: AppBar(
@@ -150,8 +152,9 @@ class AgenciesScreen extends StatelessWidget {
                                       ),
                                       IconButton(
                                         onPressed: () {
+                                          UserModel selectedAgent = jorismCubit.agentUsers[index];
                                           navigators.navigatorWithBack(
-                                              context, AgentDetailsScreen());
+                                              context, AgentDetailsScreen(agent: selectedAgent,));
                                         },
                                         icon: Icon(Icons.arrow_circle_right),
                                         iconSize: 50.0,
@@ -169,7 +172,7 @@ class AgenciesScreen extends StatelessWidget {
               ),
             );
           }
-          return Container();
+          return Center(child: CircularProgressIndicator(),);
         });
   }
 }
