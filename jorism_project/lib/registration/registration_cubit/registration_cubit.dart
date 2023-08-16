@@ -233,4 +233,25 @@ class RegistrationCubit extends Cubit<RegisterationState> {
     });
   }
 
+  Future <void> deleteUser() async {
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    emit(LoadingDeletedAccountState());
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        //await user.delete();
+        await firebaseAuth.currentUser!.delete().then((value) {
+          emit(DeletedAccountSuccessAuthState());
+          firebase.collection('users').doc(userModel!.userId).delete().then((value) {}).catchError((error){});
+        }).catchError((error){});
+        emit(DeletedAccountSuccessCollState());
+        print('User deleted successfully.');
+      }
+    } catch (e) {
+      emit(DeletedAccountErrorState());
+      print('Error deleting user: $e');
+    }
+  }
+
+
 }
