@@ -290,4 +290,23 @@ class JorismCubit extends Cubit<JorismState> {
     });
 
   }
+  List<UserModel> agentUsers = [];
+  List<UserModel> getAgentUsers() {
+
+    // Fetch users where isAgent is true
+    firestore.collection('users').where('isAgent', isEqualTo: true).get().then(
+          (querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          UserModel user = UserModel.fromJson(doc.data() as Map<String, dynamic>);
+          agentUsers.add(user);
+        });
+        print(agentUsers.length);
+        emit(GetAgentUsersSuccessState());
+      },
+    ).catchError((error) {
+      emit(GetAgentUsersErrorState(error.toString()));
+    });
+
+    return agentUsers;
+  }
 }
