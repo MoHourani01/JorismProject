@@ -77,9 +77,21 @@ class DeleteProductErrorState extends JorismState{
   DeleteProductErrorState(this.error);
 }
 
+class DeleteUserProductLoadingState extends JorismState{}
+class DeleteUserProductSuccessState extends JorismState{}
+class DeleteUserProductErrorState extends JorismState{
+  final String error;
+  DeleteUserProductErrorState(this.error);
+}
+
 class GetAgetUserLoadingState extends JorismState{}
 class GetAgentUsersSuccessState extends JorismState{}
 class GetAgentUsersErrorState extends JorismState{
   final String error;
   GetAgentUsersErrorState(this.error);
 }
+
+class ActivatedIndexState extends JorismState{}
+class ActivatedAgencyState extends JorismState{}
+
+class SelectedImageColorState extends JorismState{}
