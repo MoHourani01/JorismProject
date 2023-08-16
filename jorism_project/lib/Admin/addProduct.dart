@@ -10,6 +10,7 @@ import 'package:jorism_project/Admin/Admin_Profile_Screen.dart';
 import 'package:jorism_project/cubit/cubit.dart';
 import 'package:jorism_project/cubit/state.dart';
 import 'package:jorism_project/models/products_model.dart';
+import 'package:jorism_project/models/user_model.dart';
 import 'package:jorism_project/registration/registration_cubit/registration_cubit.dart';
 import 'package:jorism_project/screens/bottom_nav_bar/bottom_nav_bar_widget.dart';
 import 'package:jorism_project/shared/components/component.dart';
@@ -180,66 +181,74 @@ class AddProductsScreen extends StatelessWidget {
                               children: [
                                 ConditionalBuilder(
                                     condition: state is! ImageLoadingState,
-                                    builder: (context)=>IconButton(
-                                  onPressed: () async {
-                                    // await chooseSubjectImage(ImageSource.camera);
-                                    // if (imageFile != null) {
-                                    // ...
-                                    // }}
-                                    await addProductCubit
-                                        .chooseSubjectImage(
-                                        ImageSource.camera);
-                                    if (addProductCubit.imageFile != null) {
-                                      selectedImageUrl =
-                                      await addProductCubit
-                                          .fileUpload(
-                                          addProductCubit.imageFile!,
-                                          'UsersImage')
-                                          .whenComplete(() {
-                                        selectImageColor =
-                                        !selectImageColor;
-                                      });
-                                      print('Image Selected');
-                                    }
-                                  },
-                                  icon: Icon(
-                                    Icons.camera_alt_rounded,
-                                    color: Color(0xFF4F2E1D),
-                                  ),
-                                ),
-                                    fallback: (context)=>Center(child: CircularProgressIndicator(),
-                                    )),
-                                ConditionalBuilder(
-                                    condition:state is! ImageLoadingState,
-                                    builder: (context) => TextButton(
-                                      onPressed: () async {
-                                        await addProductCubit
-                                            .chooseSubjectImage(
-                                            ImageSource.gallery);
-                                        if (addProductCubit.imageFile != null) {
-                                          selectedImageUrl =
-                                          await addProductCubit
-                                              .fileUpload(
-                                              addProductCubit.imageFile!,
-                                              'UsersImage')
-                                              .whenComplete(() {
-                                            selectImageColor =
-                                            !selectImageColor;
-                                          });
-                                          print('Image Selected');
-                                        }
-                                      },
-                                      child: Text(
-                                        "Select Image",
-                                        style: TextStyle(
-                                          color: Colors.blueGrey.shade700
-                                              .withOpacity(
-                                              1),
+                                    builder: (context) =>
+                                        IconButton(
+                                          onPressed: () async {
+                                            // await chooseSubjectImage(ImageSource.camera);
+                                            // if (imageFile != null) {
+                                            // ...
+                                            // }}
+                                            await addProductCubit
+                                                .chooseSubjectImage(
+                                                ImageSource.camera);
+                                            if (addProductCubit.imageFile !=
+                                                null) {
+                                              selectedImageUrl =
+                                              await addProductCubit
+                                                  .fileUpload(
+                                                  addProductCubit.imageFile!,
+                                                  'UsersImage')
+                                                  .whenComplete(() {
+                                                selectImageColor =
+                                                !selectImageColor;
+                                              });
+                                              print('Image Selected');
+                                            }
+                                          },
+                                          icon: Icon(
+                                            Icons.camera_alt_rounded,
+                                            color: Color(0xFF4F2E1D),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    fallback: (context) => Center(child: CircularProgressIndicator(),
-                                    )),
+                                    fallback: (context) =>
+                                        Center(
+                                          child: CircularProgressIndicator(),
+                                        )),
+                                ConditionalBuilder(
+                                    condition: state is! ImageLoadingState,
+                                    builder: (context) =>
+                                        TextButton(
+                                          onPressed: () async {
+                                            await addProductCubit
+                                                .chooseSubjectImage(
+                                                ImageSource.gallery);
+                                            if (addProductCubit.imageFile !=
+                                                null) {
+                                              selectedImageUrl =
+                                              await addProductCubit
+                                                  .fileUpload(
+                                                  addProductCubit.imageFile!,
+                                                  'UsersImage')
+                                                  .whenComplete(() {
+                                                selectImageColor =
+                                                !selectImageColor;
+                                              });
+                                              print('Image Selected');
+                                            }
+                                          },
+                                          child: Text(
+                                            "Select Image",
+                                            style: TextStyle(
+                                              color: Colors.blueGrey.shade700
+                                                  .withOpacity(
+                                                  1),
+                                            ),
+                                          ),
+                                        ),
+                                    fallback: (context) =>
+                                        Center(
+                                          child: CircularProgressIndicator(),
+                                        )),
                               ],
                             ),
                             // SizedBox(width: 190),
@@ -264,8 +273,14 @@ class AddProductsScreen extends StatelessWidget {
                                 var id = Uuid().v4();
                                 var user = RegistrationCubit
                                     .get(context)
-                                    .userModel!
-                                    .username;
+                                    .userModel!;
+                                var userModel = UserModel(userId: user.userId,
+                                    username: user.username,
+                                    email: user.email,
+                                    password: user.password,
+                                    phone: user.phone,
+                                    ssc: user.ssc,
+                                );
                                 var model = ProductsModel(
                                     productId: id,
                                     productName: productName.text,
@@ -291,7 +306,12 @@ class AddProductsScreen extends StatelessWidget {
                                       state: ToastStates.Warning);
                                 } else {
                                   await addProductCubit
-                                      .addProduct(model, user as String)
+                                      .addProduct(model, user.userId)
+                                      .whenComplete(() {
+                                    // navigators.navigatePop(context);
+                                  });
+                                  await addProductCubit
+                                      .addUserCollection(model, userModel)
                                       .whenComplete(() {
                                     navigators.navigatePop(context);
                                   });
