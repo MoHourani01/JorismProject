@@ -76,3 +76,10 @@ class DeleteProductErrorState extends JorismState{
   final String error;
   DeleteProductErrorState(this.error);
 }
+
+class GetAgetUserLoadingState extends JorismState{}
+class GetAgentUsersSuccessState extends JorismState{}
+class GetAgentUsersErrorState extends JorismState{
+  final String error;
+  GetAgentUsersErrorState(this.error);
+}
