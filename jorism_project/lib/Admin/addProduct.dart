@@ -42,8 +42,11 @@ class AddProductsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<JorismCubit, JorismState>(
       listener: (context, state) {
-        if (state is ImageSuccessState) {
-          selectImageColor = true;
+        if (state is SelectedImageColorState) {
+          JorismCubit.get(context).selectImageColor = true;
+        }
+        else {
+          JorismCubit.get(context).selectImageColor=false;
         }
       },
       builder: (context, state) {
