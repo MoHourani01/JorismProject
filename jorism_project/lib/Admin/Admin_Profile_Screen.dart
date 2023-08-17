@@ -191,43 +191,6 @@ class AdminProfileScreen extends StatelessWidget {
                                   ),
                                   Spacer(),
                                   Expanded(
-                                    child: Center(
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                Color(0xFFFF5555),
-                                                Color(0xFFDB0202),
-                                                Color(0xFF880000),
-                                              ],
-                                              begin: AlignmentDirectional.topCenter,
-                                              end: Alignment.bottomCenter,
-                                            ),
-                                            // color:  Colors.white,
-                                            borderRadius: BorderRadius.circular(30.0),
-                                            boxShadow: [
-                                              BoxShadow(blurRadius: 0.5,color: Colors.grey.shade700),
-                                            ],
-                                          ),
-                                          child:
-                                          TextButton(onPressed: (
-                                              ) {
-                                            RegistrationCubit.get(context).deleteUser();
-                                            },
-                                            child: Text('Delete Account',
-                                              style: TextStyle(
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),),
-                                          )
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Expanded(
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
@@ -265,9 +228,9 @@ class AdminProfileScreen extends StatelessWidget {
                                               ),
                                               child:
                                               TextButton(onPressed: () {
-                                                passwordDialog(context);
+                                                RegistrationCubit.get(context).deleteUser();
                                               },
-                                                child: Text('Change Password' ,
+                                                child: Text('Delete Account' ,
                                                   style: TextStyle(
                                                       fontSize: 17,
                                                       fontWeight: FontWeight.bold,
