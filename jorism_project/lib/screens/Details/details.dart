@@ -79,12 +79,12 @@ class DetailsScreen extends StatelessWidget {
                         width: double.infinity,
                         height: MediaQuery.sizeOf(context).height/3,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            // color: Colors.blue
+                          borderRadius: BorderRadius.circular(25),
+                          // color: Colors.blue
                           image: DecorationImage(
-                              image: NetworkImage(
-                                  '${productDetails.productImage}',
-                              ),
+                            image: NetworkImage(
+                              '${productDetails.productImage}',
+                            ),
                             fit: BoxFit.cover,
                           ),
                         ),

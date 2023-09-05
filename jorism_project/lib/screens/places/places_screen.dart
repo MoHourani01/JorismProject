@@ -60,8 +60,8 @@ class PlacesScreen extends StatelessWidget {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(40.0),
                     borderSide: BorderSide(
-                    color:Colors.black87,
-                  ),
+                      color:Colors.black87,
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(40.0),
@@ -107,9 +107,9 @@ class PlacesScreen extends StatelessWidget {
                                   height: 235,
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(40),
-                                      image: DecorationImage(
-                                          image: AssetImage('assets/images/petraRegister.png'), fit: BoxFit.cover),
+                                    borderRadius: BorderRadius.circular(40),
+                                    image: DecorationImage(
+                                        image: AssetImage('assets/images/petraRegister.png'), fit: BoxFit.cover),
                                   ),
                                 ),
                               ),

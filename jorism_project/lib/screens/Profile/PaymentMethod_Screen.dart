@@ -58,7 +58,7 @@ class PaymentScreen extends StatelessWidget {
                 ),
                 Center(
                   child: Container(
-                    width: 344,
+                    width: 370,
                     height:700,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.63),
@@ -291,7 +291,7 @@ class PaymentScreen extends StatelessWidget {
                                   children: [
                                     MaterialButton(
                                       onPressed: (){navigators.navigatePop(context);
-                                        },
+                                      },
                                       child: Text(
                                         ("back").toUpperCase(),
                                         style: TextStyle(
@@ -340,4 +340,4 @@ class PaymentScreen extends StatelessWidget {
       },
     );
   }
-  }
+}

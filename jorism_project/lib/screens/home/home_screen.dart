@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
 
   int activatedIndex = 0;
   int activatedAgencyIndex = 0;
-
+  TextEditingController searchController=TextEditingController();
   // final carouselController = CarouselController();
 
   @override
@@ -49,19 +49,19 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             backgroundColor: Colors.transparent,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.search,
-                    size: 30,
-                  ),
-                  color: Colors.white,
-                  onPressed: () {},
-                ),
-              ),
-            ],
+            // actions: [
+            //   Padding(
+            //     padding: const EdgeInsets.only(right: 12.0),
+            //     child: IconButton(
+            //       icon: Icon(
+            //         Icons.search,
+            //         size: 30,
+            //       ),
+            //       color: Colors.white,
+            //       onPressed: () {},
+            //     ),
+            //   ),
+            // ],
             title: Text(
               'Home',
               style: TextStyle(
@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     children: [
                       Container(
-                        height: 300,
+                        height: 250,
                         // width: 200,
                         margin: EdgeInsets.all(22),
                         decoration: BoxDecoration(
@@ -112,58 +112,98 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 23,
-                  ),
+                  // SizedBox(
+                  //   height:,
+                  // ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      textAgencyContainerWidget(
-                          text: 'Agency',
-                          fontSize: 25
-                      ),
-                      Stack(
-                        alignment: Alignment.topCenter,
-                        children: [
-                          Container(
-                            height: 250,
-                            // width: 200,
-                            margin: EdgeInsets.all(22),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(40),
-                              boxShadow: [
-                                BoxShadow(blurRadius: 1.0,
-                                    color: Colors.grey.shade700),
-                              ],
-                            ),
-                            // child: ,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: carousalWidget(
-                              images: images,
-                              indicatorIndex: homeCubit.activatedAgencyIndex,
-                              // firstHeight: 290,
-                              width: 250,
-                              sizedboxHeight: 20,
-                              onPageChanged: (index, reason) =>
-                                  homeCubit.activatAgencyIndex(index),
-                            ),
-                          ),
-                        ],
-                      ),
+                      // textAgencyContainerWidget(
+                      //     text: 'Agency',
+                      //     fontSize: 25
+                      // ),
+                      // Stack(
+                      //   alignment: Alignment.topCenter,
+                      //   children: [
+                      //     Container(
+                      //       height: 250,
+                      //       // width: 200,
+                      //       margin: EdgeInsets.all(22),
+                      //       decoration: BoxDecoration(
+                      //         color: Colors.grey.shade200,
+                      //         borderRadius: BorderRadius.circular(40),
+                      //         boxShadow: [
+                      //           BoxShadow(blurRadius: 1.0,
+                      //               color: Colors.grey.shade700),
+                      //         ],
+                      //       ),
+                      //       // child: ,
+                      //     ),
+                      //     Padding(
+                      //       padding: const EdgeInsets.only(top: 30.0),
+                      //       child: carousalWidget(
+                      //         images: images,
+                      //         indicatorIndex: homeCubit.activatedAgencyIndex,
+                      //         // firstHeight: 290,
+                      //         width: 350,
+                      //         sizedboxHeight: 20,
+                      //         onPageChanged: (index, reason) =>
+                      //             homeCubit.activatAgencyIndex(index),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       textContainerWidget(
                         text: 'Trips',
                         fontSize: 23,
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Container(
+                          height: 45,
+                          margin: EdgeInsets.only(left: 22,right: 22,top: 12),
+                          child: TextField(
+                            controller: searchController,
+                            onChanged: (value) {
+                              // filterSearchResults(value);
+                            },
+                            decoration: InputDecoration(
+
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color:primaryColor,
+                              ),
+                              hintText: "Search for trips ",
+                              hintStyle: TextStyle(
+                                color:Colors.grey,
+
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(40.0),
+                                borderSide: BorderSide(
+                                  color:Colors.black87,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(40.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.black87,
+                                  )
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
                       ConditionalBuilder(condition: state is! GetUserProductLoadingState,
                           builder: (context) => MasonryGridView.count(
                               physics: BouncingScrollPhysics(),
                               crossAxisCount: 2,
                               // crossAxisSpacing: 1,
-                              // mainAxisSpacing: 0,
-                              // primary: false,
+                              // mainAxisSpacing: 1,
+                              // prima=ry: false,
                               shrinkWrap: true,
                               itemCount: homeCubit.userProductsList.length,
                               itemBuilder: (BuildContext context, int index) {
@@ -176,8 +216,8 @@ class HomeScreen extends StatelessWidget {
                                 }
                                 return Container(
                                   height: 255,
-                                  // width: 200,
-                                  margin: EdgeInsets.all(22),
+                                  width: 200,
+                                  margin: EdgeInsets.only(left: 15,bottom: 10,right: 10),
                                   decoration: BoxDecoration(
                                     color: Colors.grey.shade200,
                                     borderRadius: BorderRadius.circular(40),
@@ -194,17 +234,26 @@ class HomeScreen extends StatelessWidget {
                                         child: Padding(
                                           padding: const EdgeInsets.only(
                                               top: 8.0, left: 8, right: 8),
-                                          child: Container(
-                                            height: 150,
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius
-                                                  .circular(40),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      '${product
-                                                          .productImage}'),
-                                                  fit: BoxFit.cover),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              ProductsModel products = homeCubit
+                                                  .userProductsList[index];
+                                              navigators.navigatorWithBack(
+                                                  context, DetailsScreen(
+                                                productDetails: products,));
+                                            },
+                                            child: Container(
+                                              height: 150,
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius
+                                                    .circular(40),
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        '${product
+                                                            .productImage}'),
+                                                    fit: BoxFit.cover),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -240,15 +289,15 @@ class HomeScreen extends StatelessWidget {
                                               '${product.productPrice} JD',
                                               style: TextStyle(fontSize: 16),),
                                           ),
-                                          IconButton(
-                                              onPressed: () {
-                                                ProductsModel products = homeCubit
-                                                    .userProductsList[index];
-                                                navigators.navigatorWithBack(
-                                                    context, DetailsScreen(
-                                                  productDetails: products,));
-                                              },
-                                              icon: Icon(Icons.arrow_forward)),
+                                          // IconButton(
+                                          //     onPressed: () {
+                                          //       ProductsModel products = homeCubit
+                                          //           .userProductsList[index];
+                                          //       navigators.navigatorWithBack(
+                                          //           context, DetailsScreen(
+                                          //         productDetails: products,));
+                                          //     },
+                                          //     icon: Icon(Icons.arrow_forward)),
                                         ],
                                       ),
                                     ],
