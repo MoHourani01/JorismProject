@@ -86,7 +86,7 @@ Widget buildIndicator(int index) {
     count: 4,
     onDotClicked: animateToSlide,
     effect: SlideEffect(
-        dotWidth: 6,
+        dotWidth: 10,
         dotHeight: 5,
         activeDotColor: primaryColor,
         dotColor: Colors.grey),
