@@ -12,12 +12,12 @@ void animateToSlide(int index) => carouselController.animateToPage(index);
 // int indicatorIndex=0;
 
 Widget carousalWidget({ required List<String> images,
-    required int indicatorIndex,
-    double? firstHeight,
-    // required double secondHeight,
-    double? width,
-    required double sizedboxHeight,
-    dynamic Function(int, CarouselPageChangedReason)? onPageChanged}
+  required int indicatorIndex,
+  double? firstHeight,
+  // required double secondHeight,
+  double? width,
+  required double sizedboxHeight,
+  dynamic Function(int, CarouselPageChangedReason)? onPageChanged}
     )
 {
   return Column(
@@ -33,18 +33,14 @@ Widget carousalWidget({ required List<String> images,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 8.0, left: 8, right: 8),
-                    child: Container(
-                      // height: 250,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        image: DecorationImage(
-                          image: AssetImage('${e}'),
-                          fit: BoxFit.cover,
-                        ),
+                  child: Container(
+                    // height: 250,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                        image: AssetImage('${e}'),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -55,14 +51,14 @@ Widget carousalWidget({ required List<String> images,
         )
             .toList(),
         options: CarouselOptions(
-          height: 200,
+          height: 230,
           // aspectRatio: 10/6,
           viewportFraction: 0.8,
           initialPage: 0,
           enableInfiniteScroll: true,
           reverse: false,
           autoPlay: true,
-          autoPlayInterval: Duration(seconds: 3),
+          autoPlayInterval: Duration(seconds: 2),
           autoPlayAnimationDuration: Duration(milliseconds: 800),
           autoPlayCurve: Curves.easeIn,
           enlargeCenterPage: true,
@@ -73,7 +69,7 @@ Widget carousalWidget({ required List<String> images,
         ),
       ),
       SizedBox(
-        height: sizedboxHeight,
+        height: 4,
       ),
       buildIndicator(indicatorIndex),
     ],
@@ -86,8 +82,8 @@ Widget buildIndicator(int index) {
     count: 4,
     onDotClicked: animateToSlide,
     effect: SlideEffect(
-        dotWidth: 10,
-        dotHeight: 10,
+        dotWidth: 20,
+        dotHeight: 5,
         activeDotColor: primaryColor,
         dotColor: Colors.grey),
   );
