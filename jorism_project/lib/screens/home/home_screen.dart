@@ -85,8 +85,8 @@ class HomeScreen extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     children: [
                       Container(
-                        height: 250,
-                        // width: 200,
+                        height: 240,
+                        width: 370,
                         margin: EdgeInsets.all(22),
                         decoration: BoxDecoration(
                           color: Colors.grey.shade200,
@@ -103,8 +103,8 @@ class HomeScreen extends StatelessWidget {
                         child: carousalWidget(
                           images: images,
                           indicatorIndex: homeCubit.activatedIndex,
-                          firstHeight: 290,
-                          // width: 250,
+                          // firstHeight: 200,
+                          // width: 550,
                           sizedboxHeight: 65,
                           onPageChanged: (index, reason) =>
                               homeCubit.activatIndex(index),
