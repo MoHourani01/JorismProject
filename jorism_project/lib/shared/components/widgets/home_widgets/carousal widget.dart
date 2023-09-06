@@ -28,19 +28,19 @@ Widget carousalWidget({ required List<String> images,
             .map(
               (e) => Container(
             height: firstHeight,
-            width: width,
+            // width: 300,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        top: 8.0, left: 8, right: 8),
+                        top: 8.0, ),
                     child: Container(
                       // height: 250,
-                      width: double.infinity,
+                      width: 350,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
+                        borderRadius: BorderRadius.circular(22),
                         image: DecorationImage(
                           image: AssetImage('${e}'),
                           fit: BoxFit.cover,
@@ -72,10 +72,10 @@ Widget carousalWidget({ required List<String> images,
           onPageChanged: onPageChanged,
         ),
       ),
-      SizedBox(
-        height: sizedboxHeight,
-      ),
-      buildIndicator(indicatorIndex),
+      // SizedBox(
+      //   height: 25,
+      // ),
+      // buildIndicator(indicatorIndex),
     ],
   );
 }
