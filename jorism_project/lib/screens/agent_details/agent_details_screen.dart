@@ -14,7 +14,7 @@ import 'package:jorism_project/shared/components/constants.dart';
 class AgentDetailsScreen extends StatelessWidget {
   // const AgentDetailsScreen({super.key});
   final UserModel agent;
-
+  TextEditingController searchController=TextEditingController();
   AgentDetailsScreen({required this.agent});
   @override
   Widget build(BuildContext context) {
@@ -52,25 +52,6 @@ class AgentDetailsScreen extends StatelessWidget {
                     fontSize: 30,
                   ),
                 ),
-                actions: [
-                  Container(
-                    margin: EdgeInsets.only(right: 15),
-                    width: 110,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        color: Colors.white
-                    ),
-                    child: Center(
-                      child: Text('Contact',
-                        style: TextStyle(
-                          fontSize: 23,fontFamily: primaryFont,
-                          color: primaryColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ),
               body: SingleChildScrollView(
                 child: Column(
@@ -192,9 +173,47 @@ class AgentDetailsScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 30,
+
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Container(
+                            height: 45,
+                            margin: EdgeInsets.only(left: 22,right: 22,top: 12),
+                            child: TextField(
+                              controller: searchController,
+                              onChanged: (value) {
+                                // filterSearchResults(value);
+                              },
+                              decoration: InputDecoration(
+
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color:primaryColor,
+                                ),
+                                hintText: "Search for trips ",
+                                hintStyle: TextStyle(
+                                  color:Colors.grey,
+
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(40.0),
+                                  borderSide: BorderSide(
+                                    color:Colors.black87,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40.0),
+                                    borderSide: BorderSide(
+                                      color: Colors.black87,
+                                    )
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
+                        
                         MasonryGridView.count(
                             physics: BouncingScrollPhysics(),
                             crossAxisCount: 2,
@@ -208,8 +227,9 @@ class AgentDetailsScreen extends StatelessWidget {
                               // final product = ProductsModel.products[index];
                               return Container(
                                 height: 255,
+                                width: 200,
                                 // width: 200,
-                                margin: EdgeInsets.all(22),
+                                margin:EdgeInsets.only(left: 15,bottom: 10,right: 10),
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(40),
@@ -224,15 +244,21 @@ class AgentDetailsScreen extends StatelessWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.only(
                                             top: 8.0, left: 8, right: 8),
-                                        child: Container(
-                                          height: 150,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(40),
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    '${product.productImage}'),
-                                                fit: BoxFit.cover),
+                                        child: GestureDetector(
+                                            onTap: (){
+                                              ProductsModel productDetail=JorismCubit.get(context).userProductsList[index];
+                                              navigators.navigatorWithBack(context, DetailsScreen(productDetails: productDetail,));
+                                            },
+                                          child: Container(
+                                            height: 150,
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(40),
+                                              image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      '${product.productImage}'),
+                                                  fit: BoxFit.cover),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -264,12 +290,6 @@ class AgentDetailsScreen extends StatelessWidget {
                                           padding: const EdgeInsets.only(left: 15.0),
                                           child: Text('${product.productPrice} JD',style: TextStyle(fontSize: 16),),
                                         ),
-                                        IconButton(
-                                            onPressed: () {
-                                              ProductsModel productDetail=JorismCubit.get(context).userProductsList[index];
-                                              navigators.navigatorWithBack(context, DetailsScreen(productDetails: productDetail,));
-                                            },
-                                            icon: Icon(Icons.arrow_forward)),
                                       ],
                                     ),
                                   ],
