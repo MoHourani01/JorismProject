@@ -210,6 +210,12 @@ class RegisterScreen extends StatelessWidget {
                                           name: userController.text,
                                           phone: phoneController.text
                                         );
+                                        if(passwordController.text.length<6){
+                                          showToast(text: 'Password should be at least 6 characters', state: ToastStates.Error);
+                                        }
+                                        if(emailController.text!='${cubit.userModel?.email??""}@gmail.com'){
+                                          showToast(text: 'The email address is incorrect', state: ToastStates.Error);
+                                        }
                                         // Perform login here using emailController.text and passwordController.text
                                         // print('Login Successful!');
 
